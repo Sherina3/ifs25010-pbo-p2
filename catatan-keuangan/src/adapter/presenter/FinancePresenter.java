@@ -4,33 +4,87 @@ import domain.entity.Transaction;
 import domain.entity.TransactionType;
 import java.util.List;
 
+/**
+ * Presenter yang memformat data dari use case menjadi output layar.
+ * Format tampilan sengaja dipisahkan dari entity.
+ */
 public class FinancePresenter {
 
-    public void showTransactions(List<Transaction> transactions) {
-        System.out.println("Daftar Transaksi:");
+    /** Memformat satu transaksi menjadi baris teks untuk ditampilkan. */
+    private String format(Transaction transaction) {
+        String type = transaction.getType() == TransactionType.INCOME ? "Pemasukan" : "Pengeluaran";
+        return String.format("%d | %s | Rp %d | %s",
+                transaction.getId(), transaction.getDescription(), transaction.getAmount(), type);
+    }
+
+    /** Helper umum untuk menampilkan daftar transaksi. */
+    private void printList(List<Transaction> transactions, String header, String emptyMessage) {
+        System.out.println(header);
+
         if (transactions.isEmpty()) {
-            System.out.println("- Belum ada transaksi!");
+            System.out.println(emptyMessage);
             return;
         }
-        for (Transaction t : transactions) {
-            showSingleTransaction(t);
+
+        for (Transaction transaction : transactions) {
+            System.out.println(format(transaction));
         }
     }
 
-    public void showSingleTransaction(Transaction t) {
-        String typeStr = (t.getType() == TransactionType.PEMASUKAN) ? "Pemasukan" : "Pengeluaran";
-        System.out.println(t.getId() + " | " + t.getDescription() + " | Rp " + (long)t.getAmount() + " | " + typeStr);
+    /** Menampilkan daftar semua transaksi beserta saldo. */
+    public void showTransactions(List<Transaction> transactions, long balance) {
+        printList(transactions, "Daftar Transaksi:", "- Belum ada transaksi!");
+        System.out.printf("Saldo: Rp %d%n", balance);
     }
 
-    public void showBalance(double balance) {
-        System.out.println("Saldo: Rp " + (long)balance);
+    /** Menampilkan hasil pencarian berdasarkan kata kunci. */
+    public void showSearchResults(List<Transaction> transactions, String keyword) {
+        printList(transactions, "Hasil Pencarian: \"" + keyword + "\"", "- Transaksi tidak ditemukan!");
     }
 
-    public void showMessage(String message) {
-        System.out.println(message);
+    /** Menampilkan daftar transaksi yang sudah diurutkan beserta saldo. */
+    public void showSortedTransactions(List<Transaction> transactions, long balance) {
+        printList(transactions, "Daftar Transaksi (Terurut):", "- Belum ada transaksi!");
+        System.out.printf("Saldo: Rp %d%n", balance);
     }
 
-    public void showError(String error) {
-        System.out.println("Error: " + error);
+    /** Menampilkan saldo saat ini. */
+    public void showBalance(long balance) {
+        System.out.printf("Saldo saat ini: Rp %d%n", balance);
+    }
+
+    /** Menampilkan pesan sukses setelah menambah transaksi. */
+    public void showAddSuccess(Transaction transaction) {
+        System.out.printf("Berhasil menambah transaksi: %s%n", format(transaction));
+    }
+
+    /** Menampilkan pesan sukses setelah menghapus transaksi. */
+    public void showRemoveSuccess() {
+        System.out.println("Berhasil menghapus transaksi.");
+    }
+
+    /** Menampilkan pesan gagal saat menghapus transaksi. */
+    public void showRemoveFailed(int id) {
+        System.out.printf("[!] Gagal menghapus transaksi dengan ID: %d.%n", id);
+    }
+
+    /** Menampilkan pesan saat pilihan menu tidak dikenali. */
+    public void showInvalidChoice() {
+        System.out.println("[!] Pilihan tidak dimengerti.");
+    }
+
+    /** Menampilkan pesan saat ID yang dimasukkan tidak valid. */
+    public void showInvalidId() {
+        System.out.println("[!] ID tidak valid!");
+    }
+
+    /** Menampilkan pesan saat jumlah tidak numerik atau tidak lebih dari 0. */
+    public void showInvalidAmount() {
+        System.out.println("[!] Jumlah tidak valid!");
+    }
+
+    /** Menampilkan pesan saat opsi pengurutan tidak valid. */
+    public void showInvalidSortOption() {
+        System.out.println("[!] Pilihan tidak valid!");
     }
 }

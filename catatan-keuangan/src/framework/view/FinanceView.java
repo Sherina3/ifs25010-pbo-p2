@@ -6,123 +6,176 @@ import domain.entity.TransactionType;
 import framework.util.InputUtil;
 import usecase.FinanceUseCase;
 
+/**
+ * Tampilan konsol aplikasi catatan keuangan.
+ * Menerima input user, memanggil use case, dan menampilkan hasil via presenter.
+ * Layer ini tidak mengandung logika bisnis — hanya menangani interaksi user.
+ */
 public class FinanceView {
-    private final FinanceUseCase useCase;
+    /** Use case yang menjalankan operasi bisnis. */
+    private final FinanceUseCase financeUseCase;
+
+    /** Presenter yang memformat hasil ke output layar. */
     private final FinancePresenter presenter;
 
-    public FinanceView(FinanceUseCase useCase, FinancePresenter presenter) {
-        this.useCase = useCase;
+    public FinanceView(FinanceUseCase financeUseCase, FinancePresenter presenter) {
+        this.financeUseCase = financeUseCase;
         this.presenter = presenter;
     }
 
+    /** Menampilkan menu utama dan loop interaksi user. */
     public void show() {
-        // Alur TC-01: Tampilkan daftar transaksi & saldo awal saat aplikasi pertama kali berjalan
-        presenter.showTransactions(useCase.getAllTransactions());
-        presenter.showBalance(useCase.getBalance());
-
-        while (true) {
-            System.out.println("Menu:");
-            System.out.println("1. Tambah Pemasukan");
-            System.out.println("2. Tambah Pengeluaran");
-            System.out.println("3. Cari");
-            System.out.println("4. Urutkan");
-            System.out.println("5. Lihat Saldo");
-            System.out.println("6. Hapus");
-            System.out.println("x. Keluar");
+        boolean running = true;
+        while (running) {
+            // Tampilkan daftar transaksi + saldo terkini sebelum menu
+            presenter.showTransactions(financeUseCase.getAllTransactions(), financeUseCase.getBalance());
+            printMenu();
 
             String input = InputUtil.input("Pilih");
-            if (input.equalsIgnoreCase("x")) {
-                break;
-            }
-
             switch (input) {
-                case "1":
-                    addTransaction(TransactionType.PEMASUKAN);
-                    break;
-                case "2":
-                    addTransaction(TransactionType.PENGELUARAN);
-                    break;
-                case "3":
-                    searchTransaction();
-                    break;
-                case "4":
-                    sortTransactions();
-                    break;
-                case "5":
-                    presenter.showBalance(useCase.getBalance());
-                    break;
-                case "6":
-                    deleteTransaction();
-                    break;
-                default:
-                    presenter.showError("Pilihan menu tidak valid!");
-                    break;
+                case "1" -> addTransaction(TransactionType.INCOME);
+                case "2" -> addTransaction(TransactionType.EXPENSE);
+                case "3" -> searchTransaction();
+                case "4" -> sortTransaction();
+                case "5" -> presenter.showBalance(financeUseCase.getBalance());
+                case "6" -> removeTransaction();
+                case "x" -> running = false;
+                default -> presenter.showInvalidChoice();
+            }
+
+            if (running) {
+                System.out.println();
             }
         }
     }
 
+    /** Mencetak opsi menu ke layar. */
+    private void printMenu() {
+        System.out.println("Menu:");
+        System.out.println("1. Tambah Pemasukan");
+        System.out.println("2. Tambah Pengeluaran");
+        System.out.println("3. Cari");
+        System.out.println("4. Urutkan");
+        System.out.println("5. Lihat Saldo");
+        System.out.println("6. Hapus");
+        System.out.println("x. Keluar");
+    }
+
+    /** Form tambah transaksi (pemasukan atau pengeluaran). */
     private void addTransaction(TransactionType type) {
-        if (type == TransactionType.PEMASUKAN) {
-            System.out.println("[Tambah Pemasukan]");
+        String label = type == TransactionType.INCOME ? "Pemasukan" : "Pengeluaran";
+        System.out.println("[Menambah " + label + "]");
+
+        String description = InputUtil.input("Keterangan (x Jika Batal)");
+        if (description.equals("x")) {
+            return;
+        }
+
+        String strAmount = InputUtil.input("Jumlah (x Jika Batal)");
+        if (strAmount.equals("x")) {
+            return;
+        }
+
+        Long amount = parseAmount(strAmount);
+        if (amount == null) {
+            presenter.showInvalidAmount();
+            return;
+        }
+
+        presenter.showAddSuccess(financeUseCase.addTransaction(description, amount, type));
+    }
+
+    /** Form hapus transaksi berdasarkan ID. */
+    private void removeTransaction() {
+        System.out.println("[Menghapus Transaksi]");
+        String strId = InputUtil.input("[ID Transaksi] yang dihapus (x Jika Batal)");
+
+        if (strId.equals("x")) {
+            return;
+        }
+
+        Integer id = parseId(strId);
+        if (id == null) {
+            return;
+        }
+
+        if (financeUseCase.removeTransaction(id)) {
+            presenter.showRemoveSuccess();
         } else {
-            System.out.println("[Tambah Pengeluaran]");
-        }
-
-        String desc = InputUtil.input("Keterangan (x Jika Batal)");
-        if (desc.equalsIgnoreCase("x")) return;
-
-        String amountStr = InputUtil.input("Jumlah");
-        if (amountStr.equalsIgnoreCase("x")) return;
-
-        try {
-            double amount = Double.parseDouble(amountStr);
-            useCase.addTransaction(desc, amount, type);
-
-            var transactions = useCase.getAllTransactions();
-            var lastTx = transactions.get(transactions.size() - 1);
-            System.out.print("Berhasil menambah transaksi: ");
-            presenter.showSingleTransaction(lastTx);
-        } catch (NumberFormatException e) {
-            presenter.showError("Nominal tidak valid!");
+            presenter.showRemoveFailed(id);
         }
     }
 
+    /** Form cari transaksi berdasarkan keterangan. */
     private void searchTransaction() {
-        String query = InputUtil.input("Cari");
-        if (query.equalsIgnoreCase("x")) return;
-        presenter.showTransactions(useCase.searchTransactions(query));
-    }
+        System.out.println("[Mencari Transaksi]");
+        String keyword = InputUtil.input("Kata Kunci (x Jika Batal)");
 
-    private void sortTransactions() {
-        String opt = InputUtil.input("Urutkan (1: ID ASC, 2: ID DESC, 3: Nominal ASC, 4: Nominal DESC)");
-        if (opt.equalsIgnoreCase("x")) return;
-
-        SortOption sortOption;
-        switch (opt) {
-            case "1": sortOption = SortOption.ID_ASC; break;
-            case "2": sortOption = SortOption.ID_DESC; break;
-            case "3": sortOption = SortOption.AMOUNT_ASC; break;
-            case "4": sortOption = SortOption.AMOUNT_DESC; break;
-            default:
-                presenter.showError("Pilihan urutan tidak valid!");
-                return;
+        if (!keyword.equals("x")) {
+            presenter.showSearchResults(financeUseCase.searchTransactions(keyword), keyword);
         }
-        presenter.showTransactions(useCase.getSortedTransactions(sortOption));
     }
 
-    private void deleteTransaction() {
-        String idStr = InputUtil.input("ID Transaksi yang dihapus");
-        if (idStr.equalsIgnoreCase("x")) return;
+    /** Form urutkan transaksi berdasarkan pilihan user. */
+    private void sortTransaction() {
+        System.out.println("[Mengurutkan Transaksi]");
+        System.out.println("Pilihan Pengurutan:");
+        System.out.println("1. Jumlah (Terbesar)");
+        System.out.println("2. Jumlah (Terkecil)");
+        System.out.println("3. Pemasukan Dulu");
+        System.out.println("4. Pengeluaran Dulu");
+        System.out.println("x. Batal");
 
+        String input = InputUtil.input("Pilih");
+        if (input.equals("x")) {
+            return;
+        }
+
+        SortOption option = mapSortOption(input);
+        if (option == null) {
+            presenter.showInvalidSortOption();
+            return;
+        }
+
+        presenter.showSortedTransactions(financeUseCase.sortTransactions(option), financeUseCase.getBalance());
+    }
+
+    /**
+     * Mengonversi input string menjadi ID.
+     *
+     * @return ID jika valid, null jika tidak valid (error sudah ditampilkan)
+     */
+    private Integer parseId(String value) {
         try {
-            int id = Integer.parseInt(idStr);
-            if (useCase.deleteTransaction(id)) {
-                presenter.showMessage("Transaksi berhasil dihapus!");
-            } else {
-                presenter.showError("Transaksi tidak ditemukan!");
-            }
+            return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            presenter.showError("ID tidak valid!");
+            presenter.showInvalidId();
+            return null;
         }
+    }
+
+    /**
+     * Mengonversi input string menjadi jumlah uang.
+     *
+     * @return jumlah jika numerik dan lebih dari 0, null jika tidak valid
+     */
+    private Long parseAmount(String value) {
+        try {
+            long amount = Long.parseLong(value);
+            return amount > 0 ? amount : null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    /** Memetakan pilihan menu (1-4) ke {@link SortOption} domain. */
+    private SortOption mapSortOption(String input) {
+        return switch (input) {
+            case "1" -> SortOption.AMOUNT_DESC;
+            case "2" -> SortOption.AMOUNT_ASC;
+            case "3" -> SortOption.INCOME_FIRST;
+            case "4" -> SortOption.EXPENSE_FIRST;
+            default -> null;
+        };
     }
 }
