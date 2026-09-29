@@ -1,12 +1,11 @@
-package domain.repository;
+package usecase.repository;
 
 import domain.entity.Guest;
 import java.util.List;
 
 public interface IGuestRepository {
-    List<Guest> findAll();
-    Guest findById(int id);
-    Guest save(String name, String purpose);
-    boolean deleteById(int id);
-    boolean update(Guest guest);
+    Guest addGuest(String name, String purpose);
+    List<Guest> getAllGuests();
+    List<Guest> searchGuests(String keyword);
+    boolean deleteGuest(int id);
 }
