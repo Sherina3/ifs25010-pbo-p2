@@ -1,49 +1,44 @@
-package adapter.repository;
+package adapter.presenter;
 
 import domain.entity.Guest;
-import domain.repository.IGuestRepository;
-import java.util.ArrayList;
 import java.util.List;
 
-public class GuestRepository implements IGuestRepository {
-    private final List<Guest> guests = new ArrayList<>();
-    private int idCounter = 1;
+public class GuestPresenter {
 
-    @Override
-    public List<Guest> findAll() {
-        return guests;
+    public GuestPresenter() {
     }
 
-    @Override
-    public Guest findById(int id) {
-        for (Guest g : guests) {
-            if (g.getId() == id) {
-                return g;
+    public void showGuests(List<Guest> guests) {
+        System.out.println("Daftar Tamu:");
+        if (guests == null || guests.isEmpty()) {
+            System.out.println("- Data tamu belum tersedia!");
+        } else {
+            for (Guest guest : guests) {
+                System.out.println(guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
             }
         }
-        return null;
     }
 
-    @Override
-    public Guest save(String name, String purpose) {
-        Guest guest = new Guest(idCounter++, name, purpose);
-        guests.add(guest);
-        return guest;
+    public void showMenu() {
+        System.out.println("Menu:");
+        System.out.println("1. Daftarkan");
+        System.out.println("2. Cari");
+        System.out.println("3. Hapus");
+        System.out.println("x. Keluar");
     }
 
-    @Override
-    public boolean deleteById(int id) {
-        return guests.removeIf(g -> g.getId() == id);
+    public void showAddSuccess(Guest guest) {
+        System.out.println("Berhasil mendaftarkan tamu: " + guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
     }
 
-    @Override
-    public boolean update(Guest guest) {
-        for (int i = 0; i < guests.size(); i++) {
-            if (guests.get(i).getId() == guest.getId()) {
-                guests.set(i, guest);
-                return true;
+    // --- PERBAIKAN PADA METHOD INI ---
+    public void showSearchResults(String keyword, List<Guest> results) {
+        // Cetak hasil pencarian
+        System.out.println("Hasil Pencarian : \"" + keyword + "\"");
+        if (results != null && !results.isEmpty()) {
+            for (Guest guest : results) {
+                System.out.println(guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
             }
         }
-        return false;
     }
 }
