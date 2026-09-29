@@ -1,23 +1,12 @@
-package adapter.repository;
+package domain.repository;
 
 import domain.entity.Guest;
-import domain.repository.IGuestRepository;
-import java.util.ArrayList;
 import java.util.List;
 
-public class GuestRepository implements IGuestRepository {
-    private final List<Guest> guests = new ArrayList<>();
-    private int idCounter = 1;
-
-    @Override
-    public List<Guest> findAll() {
-        return guests;
-    }
-
-    @Override
-    public Guest save(String name, String purpose) {
-        Guest guest = new Guest(idCounter++, name, purpose);
-        guests.add(guest);
-        return guest;
-    }
+public interface IGuestRepository {
+    List<Guest> findAll();
+    Guest findById(int id);
+    Guest save(String name, String purpose);
+    boolean deleteById(int id);
+    boolean update(Guest guest);
 }
