@@ -31,7 +31,8 @@ public class GuestPresenter {
         System.out.println("Berhasil mendaftarkan tamu: " + guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
     }
 
-    // Pastikan string diawali langsung dengan "Hasil Pencarian" tanpa spasi di depan
+    // --- PERBAIKAN DI SINI ---
+    // Pastikan tidak ada spasi sebelum kata "Hasil"
     public void showSearchResults(String keyword, List<Guest> results) {
         System.out.println("Hasil Pencarian : \"" + keyword + "\"");
         if (results != null && !results.isEmpty()) {
