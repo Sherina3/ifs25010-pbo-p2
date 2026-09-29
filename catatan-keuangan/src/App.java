@@ -7,9 +7,10 @@ import usecase.FinanceUseCase;
 public class App {
     public static void main(String[] args) {
         ITransactionRepository repository = new TransactionRepository();
-        FinanceUseCase useCase = new FinanceUseCase(repository);
         FinancePresenter presenter = new FinancePresenter();
+        FinanceUseCase useCase = new FinanceUseCase(repository);
         FinanceView view = new FinanceView(useCase, presenter);
+
         view.show();
     }
 }
