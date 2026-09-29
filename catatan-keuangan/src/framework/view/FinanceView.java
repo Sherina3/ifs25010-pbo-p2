@@ -17,26 +17,26 @@ public class FinanceView {
 
     public void show() {
         while (true) {
-            System.out.println("\n=== APLIKASI CATATAN KEUANGAN ===");
-            System.out.println("1. Tambah Transaksi");
-            System.out.println("2. Lihat Semua Transaksi");
-            System.out.println("3. Cari Transaksi");
-            System.out.println("4. Urutkan Transaksi");
-            System.out.println("5. Hapus Transaksi");
-            System.out.println("6. Lihat Ringkasan Saldo");
+            System.out.println("Menu:");
+            System.out.println("1. Tambah Pemasukan");
+            System.out.println("2. Tambah Pengeluaran");
+            System.out.println("3. Cari");
+            System.out.println("4. Urutkan");
+            System.out.println("5. Lihat Saldo");
+            System.out.println("6. Hapus");
             System.out.println("x. Keluar");
 
-            String input = InputUtil.input("Pilih menu");
+            String input = InputUtil.input("Pilih");
             if (input.equalsIgnoreCase("x")) {
                 break;
             }
 
             switch (input) {
                 case "1":
-                    addTransaction();
+                    addTransaction(TransactionType.PEMASUKAN);
                     break;
                 case "2":
-                    presenter.showTransactions(useCase.getAllTransactions());
+                    addTransaction(TransactionType.PENGELUARAN);
                     break;
                 case "3":
                     searchTransaction();
@@ -45,10 +45,10 @@ public class FinanceView {
                     sortTransactions();
                     break;
                 case "5":
-                    deleteTransaction();
+                    presenter.showBalance(useCase.getBalance());
                     break;
                 case "6":
-                    presenter.showBalance(useCase.getTotalIncome(), useCase.getTotalExpense(), useCase.getBalance());
+                    deleteTransaction();
                     break;
                 default:
                     presenter.showError("Pilihan menu tidak valid!");
@@ -57,49 +57,40 @@ public class FinanceView {
         }
     }
 
-    private void addTransaction() {
-        System.out.println("\n--- Tambah Transaksi ---");
-        String typeStr = InputUtil.input("Tipe (1: Pemasukan, 2: Pengeluaran) (x untuk batal)");
-        if (typeStr.equalsIgnoreCase("x")) return;
-
-        TransactionType type;
-        if (typeStr.equals("1")) {
-            type = TransactionType.PEMASUKAN;
-        } else if (typeStr.equals("2")) {
-            type = TransactionType.PENGELUARAN;
+    private void addTransaction(TransactionType type) {
+        if (type == TransactionType.PEMASUKAN) {
+            System.out.println("[Tambah Pemasukan]");
         } else {
-            presenter.showError("Tipe transaksi tidak valid!");
-            return;
+            System.out.println("[Tambah Pengeluaran]");
         }
 
-        String desc = InputUtil.input("Deskripsi (x untuk batal)");
+        String desc = InputUtil.input("Keterangan (x Jika Batal)");
         if (desc.equalsIgnoreCase("x")) return;
 
-        String amountStr = InputUtil.input("Nominal (x untuk batal)");
+        String amountStr = InputUtil.input("Jumlah");
         if (amountStr.equalsIgnoreCase("x")) return;
 
         try {
             double amount = Double.parseDouble(amountStr);
-            if (amount <= 0) {
-                presenter.showError("Nominal harus lebih dari 0!");
-                return;
-            }
             useCase.addTransaction(desc, amount, type);
-            presenter.showMessage("Transaksi berhasil ditambahkan!");
+            // Ambil transaksi terakhir yang baru ditambahkan untuk ditampilkan
+            var transactions = useCase.getAllTransactions();
+            var lastTx = transactions.get(transactions.size() - 1);
+            System.out.print("Berhasil menambah transaksi: ");
+            presenter.showSingleTransaction(lastTx);
         } catch (NumberFormatException e) {
             presenter.showError("Nominal tidak valid!");
         }
     }
 
     private void searchTransaction() {
-        String query = InputUtil.input("Masukkan kata kunci pencarian (x untuk batal)");
+        String query = InputUtil.input("Cari");
         if (query.equalsIgnoreCase("x")) return;
         presenter.showTransactions(useCase.searchTransactions(query));
     }
 
     private void sortTransactions() {
-        System.out.println("1. ID Ascending\n2. ID Descending\n3. Nominal Ascending\n4. Nominal Descending");
-        String opt = InputUtil.input("Pilih urutan (x untuk batal)");
+        String opt = InputUtil.input("Urutkan (1: ID ASC, 2: ID DESC, 3: Nominal ASC, 4: Nominal DESC)");
         if (opt.equalsIgnoreCase("x")) return;
 
         SortOption sortOption;
@@ -116,7 +107,7 @@ public class FinanceView {
     }
 
     private void deleteTransaction() {
-        String idStr = InputUtil.input("Masukkan ID transaksi yang ingin dihapus (x untuk batal)");
+        String idStr = InputUtil.input("ID Transaksi yang dihapus");
         if (idStr.equalsIgnoreCase("x")) return;
 
         try {
@@ -124,7 +115,7 @@ public class FinanceView {
             if (useCase.deleteTransaction(id)) {
                 presenter.showMessage("Transaksi berhasil dihapus!");
             } else {
-                presenter.showError("Transaksi dengan ID tersebut tidak ditemukan!");
+                presenter.showError("Transaksi tidak ditemukan!");
             }
         } catch (NumberFormatException e) {
             presenter.showError("ID tidak valid!");
