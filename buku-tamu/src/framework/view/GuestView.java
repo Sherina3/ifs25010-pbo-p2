@@ -67,15 +67,20 @@ public class GuestView {
                     if (isDeleted) {
                         System.out.println("Berhasil menghapus tamu.");
                     } else {
-                        System.out.println("Gagal menghapus tamu.");
+                        System.out.println("[!] ID tidak valid!");
                     }
                 } catch (NumberFormatException e) {
-                    // Penanganan jika ID bukan angka
+                    System.out.println("[!] ID tidak valid!");
                 }
                 System.out.println();
 
             } else if ("x".equalsIgnoreCase(menuOption)) {
                 break;
+
+            } else {
+                // Penanganan jika opsi menu yang dimasukkan tidak valid
+                System.out.println("Pilihan tidak dimengerti.");
+                System.out.println();
             }
         }
     }
