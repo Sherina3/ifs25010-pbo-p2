@@ -1,4 +1,4 @@
-package usecase.repository;
+package domain.repository;
 
 import domain.entity.Guest;
 import java.util.List;

@@ -1,7 +1,7 @@
 package adapter.repository;
 
 import domain.entity.Guest;
-import usecase.IGuestRepository; // <-- Diubah di sini (tanpa .repository)
+import domain.repository.IGuestRepository; // <-- Import yang benar
 import java.util.ArrayList;
 import java.util.List;
 
