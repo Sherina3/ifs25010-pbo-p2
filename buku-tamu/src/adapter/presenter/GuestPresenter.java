@@ -1,20 +1,16 @@
 package adapter.presenter;
 
 import domain.entity.Guest;
-import usecase.GuestUseCase;
 import java.util.List;
 
 public class GuestPresenter {
-    private final GuestUseCase useCase;
 
-    public GuestPresenter(GuestUseCase useCase) {
-        this.useCase = useCase;
+    public GuestPresenter() {
     }
 
-    public void showAllGuests() {
-        List<Guest> guests = useCase.getAllGuests();
+    public void showGuests(List<Guest> guests) {
         System.out.println("Daftar Tamu:");
-        if (guests.isEmpty()) {
+        if (guests == null || guests.isEmpty()) {
             System.out.println("- Data tamu belum tersedia!");
         } else {
             for (Guest guest : guests) {
@@ -23,8 +19,15 @@ public class GuestPresenter {
         }
     }
 
-    public void addGuest(String name, String purpose) {
-        Guest guest = useCase.addGuest(name, purpose);
+    public void showMenu() {
+        System.out.println("Menu:");
+        System.out.println("1. Daftarkan");
+        System.out.println("2. Cari");
+        System.out.println("3. Hapus");
+        System.out.println("x. Keluar");
+    }
+
+    public void showAddSuccess(Guest guest) {
         System.out.println("Berhasil mendaftarkan tamu: " + guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
     }
-}
+}   
