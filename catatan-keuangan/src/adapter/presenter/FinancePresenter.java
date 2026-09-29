@@ -1,69 +1,39 @@
 package adapter.presenter;
 
 import domain.entity.Transaction;
-import domain.entity.TransactionType;
 import java.util.List;
 
 public class FinancePresenter {
-    private String format(Transaction t) {
-        String typeStr = t.getType() == TransactionType.INCOME ? "Pemasukan" : "Pengeluaran";
-        return String.format("%d | %s | Rp %.0f | %s", t.getId(), t.getDescription(), t.getAmount(), typeStr);
-    }
 
-    private void printBalance(double balance) {
-        System.out.printf("Saldo saat ini: Rp %.0f%n", balance);
-    }
-
-    private void printList(List<Transaction> list, String header, String emptyMessage) {
-        System.out.println(header);
-        if (list.isEmpty()) {
-            System.out.println(emptyMessage);
+    public void showTransactions(List<Transaction> transactions) {
+        System.out.println("Daftar Transaksi:");
+        if (transactions == null || transactions.isEmpty()) {
+            System.out.println("- Belum ada transaksi!");
         } else {
-            for (Transaction t : list) {
-                System.out.println(format(t));
+            for (Transaction t : transactions) {
+                System.out.println(t.getId() + " | " + t.getDescription() + " | Rp" + t.getAmount() + " | " + t.getType());
             }
         }
     }
 
-    public void showTransactions(List<Transaction> list, double balance) {
-        printList(list, "Daftar Transaksi:", "- Belum ada transaksi!");
-        printBalance(balance);
+    // --- PERBAIKAN DI SINI ---
+    // Ubah "Saldo saat ini: Rp" menjadi "Saldo: Rp"
+    public void showBalance(long balance) {
+        System.out.println("Saldo: Rp" + balance);
     }
 
-    public void showSearchResults(List<Transaction> list, String keyword) {
-        printList(list, "Hasil Pencarian: \"" + keyword + "\"", "- Transaksi tidak ditemukan!");
+    public void showMenu() {
+        System.out.println("Menu:");
+        System.out.println("1. Tambah Pemasukan");
+        System.out.println("2. Tambah Pengeluaran");
+        System.out.println("3. Cari");
+        System.out.println("4. Urutkan");
+        System.out.println("5. Lihat Saldo");
+        System.out.println("6. Hapus");
+        System.out.println("x. Keluar");
     }
 
-    public void showSortedTransactions(List<Transaction> list, double balance) {
-        printList(list, "Daftar Transaksi (Terurut):", "- Belum ada transaksi!");
-        printBalance(balance);
-    }
-
-    public void showAddSuccess(Transaction t) {
-        System.out.printf("Berhasil menambah transaksi: %s%n", format(t));
-    }
-
-    public void showRemoveSuccess() {
-        System.out.println("Berhasil menghapus transaksi.");
-    }
-
-    public void showRemoveFailed(int id) {
-        System.out.printf("[!] Gagal menghapus transaksi dengan ID: %d.%n", id);
-    }
-
-    public void showInvalidChoice() {
-        System.out.println("[!] Pilihan tidak dimengerti.");
-    }
-
-    public void showInvalidId() {
-        System.out.println("[!] ID tidak valid!");
-    }
-
-    public void showInvalidSortOption() {
-        System.out.println("[!] Pilihan tidak valid!");
-    }
-
-    public void showInvalidAmount() {
-        System.out.println("[!] Jumlah tidak valid!");
+    public void showAddSuccess(Transaction transaction) {
+        System.out.println("Berhasil menambah transaksi: " + transaction.getId() + " | " + transaction.getDescription() + " | Rp" + transaction.getAmount() + " | " + transaction.getType());
     }
 }
