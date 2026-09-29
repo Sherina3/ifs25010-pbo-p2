@@ -43,22 +43,19 @@ public class GuestView {
                 guestPresenter.showAddSuccess(createdGuest);
                 System.out.println();
 
-} else if ("2".equals(menuOption)) {
-    System.out.println("[Mencari Tamu]");
-    // Tepat 1 spasi setelah titik dua: "Nama (x Jika Batal) : "
-    String keyword = InputUtil.input("Nama (x Jika Batal) : ");
-    if ("x".equalsIgnoreCase(keyword)) {
-        continue;
-    }
+            } else if ("2".equals(menuOption)) {
+                System.out.println("[Mencari Tamu]");
+                String keyword = InputUtil.input("Nama (x Jika Batal) : ");
+                if ("x".equalsIgnoreCase(keyword)) {
+                    continue;
+                }
 
-    List<Guest> searchResults = guestUseCase.searchGuests(keyword);
-    guestPresenter.showSearchResults(keyword, searchResults);
-    System.out.println();
-}
+                List<Guest> searchResults = guestUseCase.searchGuests(keyword);
+                guestPresenter.showSearchResults(keyword, searchResults);
+                System.out.println();
 
             } else if ("3".equals(menuOption)) {
                 System.out.println("[Menghapus Tamu]");
-                // Perubahan di sini: Menggunakan "[ID Tamu]"
                 String idInput = InputUtil.input("[ID Tamu] yang dihapus (x Jika Batal) : ");
                 if ("x".equalsIgnoreCase(idInput)) {
                     continue;
