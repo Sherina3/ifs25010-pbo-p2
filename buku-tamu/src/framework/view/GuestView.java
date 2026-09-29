@@ -4,98 +4,79 @@ import adapter.presenter.GuestPresenter;
 import framework.util.InputUtil;
 import usecase.GuestUseCase;
 
-/**
- * Tampilan konsol buku tamu.
- * Menerima input user, memanggil use case, dan menampilkan hasil via presenter.
- */
 public class GuestView {
-    private final GuestUseCase guestUseCase;
+    private final GuestUseCase useCase;
     private final GuestPresenter presenter;
 
-    public GuestView(GuestUseCase guestUseCase, GuestPresenter presenter) {
-        this.guestUseCase = guestUseCase;
+    public GuestView(GuestUseCase useCase, GuestPresenter presenter) {
+        this.useCase = useCase;
         this.presenter = presenter;
     }
 
-    /** Menampilkan menu utama dan loop interaksi user. */
     public void show() {
         boolean running = true;
         while (running) {
-            presenter.showGuests(guestUseCase.getAllGuests());
+            presenter.showGuests(useCase.getAllGuests());
             printMenu();
-
             String input = InputUtil.input("Pilih");
             switch (input) {
-                case "1" -> registerGuest();
+                case "1" -> addGuest();
                 case "2" -> searchGuest();
                 case "3" -> removeGuest();
                 case "x" -> running = false;
                 default -> presenter.showInvalidChoice();
             }
-
-            if (running) {
+            if (running)
                 System.out.println();
-            }
         }
     }
 
     private void printMenu() {
         System.out.println("Menu:");
-        System.out.println("1. Daftarkan Tamu");
+        System.out.println("1. Daftarkan Tamu");   // diubah: ditambah " Tamu"
         System.out.println("2. Cari");
         System.out.println("3. Hapus");
         System.out.println("x. Keluar");
     }
 
-    /** Form pendaftaran tamu baru. */
-    private void registerGuest() {
+    private void addGuest() {
         System.out.println("[Mendaftarkan Tamu]");
-
         String name = InputUtil.input("Nama (x Jika Batal)");
-        if (name.equals("x")) {
+        if (name.equals("x"))
             return;
-        }
 
         String purpose = InputUtil.input("Tujuan Kunjungan (x Jika Batal)");
-        if (purpose.equals("x")) {
+        if (purpose.equals("x"))
             return;
-        }
 
-        presenter.showRegisterSuccess(guestUseCase.registerGuest(name, purpose));
+        presenter.showAddSuccess(useCase.addGuest(name, purpose));
     }
 
-    /** Form cari tamu berdasarkan nama. */
     private void searchGuest() {
         System.out.println("[Mencari Tamu]");
-        String keyword = InputUtil.input("Kata Kunci (x Jika Batal)");
-
+        String keyword = InputUtil.input("Kata Kunci (x Jika Batal)");   // diubah: "Nama" -> "Kata Kunci"
         if (!keyword.equals("x")) {
-            presenter.showSearchResults(guestUseCase.searchGuests(keyword), keyword);
+            presenter.showSearchResults(useCase.searchGuests(keyword), keyword);
         }
     }
 
-    /** Form hapus tamu berdasarkan ID. */
     private void removeGuest() {
         System.out.println("[Menghapus Tamu]");
         String strId = InputUtil.input("[ID Tamu] yang dihapus (x Jika Batal)");
-
-        if (strId.equals("x")) {
+        if (strId.equals("x"))
             return;
-        }
 
         Integer id = parseId(strId);
-        if (id == null) {
+        if (id == null)
             return;
-        }
 
-        if (guestUseCase.removeGuest(id)) {
+        if (useCase.removeGuest(id)) {
             presenter.showRemoveSuccess();
         } else {
             presenter.showRemoveFailed(id);
         }
     }
 
-    /** Mengonversi input menjadi ID; jika gagal, error ditampilkan dan null dikembalikan. */
     private Integer parseId(String value) {
         try {
             return Integer.parseInt(value);
