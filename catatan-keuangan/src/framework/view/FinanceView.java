@@ -55,7 +55,7 @@ public class FinanceView {
                     deleteTransaction();
                     break;
                 default:
-                    presenter.showError("Pilihan menu tidak valid!");
+                    presenter.showError("[!] Pilihan tidak dimengerti.");
                     break;
             }
         }
@@ -76,6 +76,10 @@ public class FinanceView {
 
         try {
             double amount = Double.parseDouble(amountStr);
+            if (amount <= 0) {
+                presenter.showError("[!] Jumlah tidak valid!");
+                return;
+            }
             useCase.addTransaction(desc, amount, type);
 
             var transactions = useCase.getAllTransactions();
@@ -86,14 +90,14 @@ public class FinanceView {
             presenter.showSingleTransaction(lastTx);
 
         } catch (NumberFormatException e) {
-            presenter.showError("Nominal tidak valid!");
+            presenter.showError("[!] Jumlah tidak valid!");
         }
     }
 
     private void searchTransaction() {
         String query = InputUtil.input("Cari");
         if (query.equalsIgnoreCase("x")) return;
-        presenter.showTransactions(useCase.searchTransactions(query));
+        presenter.showSearchResults(query, useCase.searchTransactions(query));
     }
 
     private void sortTransactions() {
@@ -107,10 +111,10 @@ public class FinanceView {
             case "3": sortOption = SortOption.AMOUNT_ASC; break;
             case "4": sortOption = SortOption.AMOUNT_DESC; break;
             default:
-                presenter.showError("Pilihan urutan tidak valid!");
+                presenter.showError("[!] Pilihan tidak valid!");
                 return;
         }
-        presenter.showTransactions(useCase.getSortedTransactions(sortOption));
+        presenter.showSortedTransactions(useCase.getSortedTransactions(sortOption));
     }
 
     private void deleteTransaction() {
@@ -120,12 +124,12 @@ public class FinanceView {
         try {
             int id = Integer.parseInt(idStr);
             if (useCase.deleteTransaction(id)) {
-                presenter.showMessage("Transaksi berhasil dihapus!");
+                presenter.showMessage("Berhasil menghapus transaksi.");
             } else {
-                presenter.showError("Transaksi tidak ditemukan!");
+                presenter.showError("[!] Gagal menghapus transaksi dengan ID: " + id + ".");
             }
         } catch (NumberFormatException e) {
-            presenter.showError("ID tidak valid!");
+            presenter.showError("[!] ID tidak valid!");
         }
     }
 }

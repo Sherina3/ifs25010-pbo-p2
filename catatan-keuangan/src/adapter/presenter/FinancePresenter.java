@@ -7,13 +7,25 @@ import java.util.List;
 public class FinancePresenter {
 
     public void showTransactions(List<Transaction> transactions) {
-        System.out.println("Daftar Transaksi:");
+        showTransactionList(transactions, "Daftar Transaksi:", "- Belum ada transaksi!");
+    }
+
+    public void showSearchResults(String query, List<Transaction> transactions) {
+        showTransactionList(transactions, "Hasil Pencarian: \"" + query + "\"", "- Transaksi tidak ditemukan!");
+    }
+
+    public void showSortedTransactions(List<Transaction> transactions) {
+        showTransactionList(transactions, "Daftar Transaksi (Terurut):", "- Belum ada transaksi!");
+    }
+
+    private void showTransactionList(List<Transaction> transactions, String header, String emptyMessage) {
+        System.out.println(header);
         if (transactions.isEmpty()) {
-            System.out.println("- Belum ada transaksi!");
+            System.out.println(emptyMessage);
             return;
         }
-        for (Transaction t : transactions) {
-            showSingleTransaction(t);
+        for (Transaction transaction : transactions) {
+            showSingleTransaction(transaction);
         }
     }
 
@@ -35,6 +47,6 @@ public class FinancePresenter {
     }
 
     public void showError(String error) {
-        System.out.println("Error: " + error);
+        System.out.println(error);
     }
 }
