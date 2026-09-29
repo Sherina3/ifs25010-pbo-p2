@@ -32,12 +32,10 @@ public class GuestPresenter {
     }
 
     // --- PERBAIKAN DI SINI ---
+    // Pastikan ada spasi setelah titik dua: "Hasil Pencarian : \""
     public void showSearchResults(String keyword, List<Guest> results) {
-        System.out.println("Hasil Pencarian : \"" + keyword + "\"");
-        if (results == null || results.isEmpty()) {
-            // Tambahkan baris ini jika data pencarian tidak ditemukan
-            System.out.println("- Tamu tidak ditemukan!");
-        } else {
+        System.out.println("Hasil Pencarian: \"" + keyword + "\"");
+        if (results != null && !results.isEmpty()) {
             for (Guest guest : results) {
                 System.out.println(guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
             }
