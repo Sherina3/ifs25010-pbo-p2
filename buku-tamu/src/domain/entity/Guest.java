@@ -1,9 +1,18 @@
 package domain.entity;
 
+/**
+ * Entity inti yang merepresentasikan satu tamu.
+ * Tidak ada fitur ubah data tamu, sehingga seluruh field bersifat final.
+ */
 public class Guest {
+    /** ID unik tamu. */
     private final int id;
-    private String name;
-    private String purpose;
+
+    /** Nama tamu. */
+    private final String name;
+
+    /** Tujuan kunjungan. */
+    private final String purpose;
 
     public Guest(int id, String name, String purpose) {
         this.id = id;
@@ -11,10 +20,15 @@ public class Guest {
         this.purpose = purpose;
     }
 
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public String getPurpose() { return purpose; }
+    public int getId() {
+        return id;
+    }
 
-    public void changeName(String name) { this.name = name; }
-    public void changePurpose(String purpose) { this.purpose = purpose; }
+    public String getName() {
+        return name;
+    }
+
+    public String getPurpose() {
+        return purpose;
+    }
 }

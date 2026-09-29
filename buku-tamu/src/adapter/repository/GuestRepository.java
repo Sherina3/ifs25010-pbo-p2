@@ -4,47 +4,43 @@ import domain.entity.Guest;
 import domain.repository.IGuestRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+/** Implementasi repository tamu dengan penyimpanan in-memory berbasis {@link List}. */
 public class GuestRepository implements IGuestRepository {
-    private final List<Guest> guests = new ArrayList<>();
-    private int idCounter = 1;
+    /** Penyimpanan data tamu di memori. */
+    private final List<Guest> data = new ArrayList<>();
+
+    /** Penghitung ID otomatis, bertambah setiap kali tamu baru disimpan. */
+    private int idCounter = 0;
 
     @Override
     public List<Guest> findAll() {
-        return guests;
+        // Salinan defensif agar data internal tidak bisa diubah dari luar
+        return new ArrayList<>(data);
     }
 
     @Override
-    public Guest findById(int id) {
-        for (Guest g : guests) {
-            if (g.getId() == id) {
-                return g;
-            }
-        }
-        return null;
+    public Optional<Guest> findById(int id) {
+        return data.stream()
+                .filter(guest -> guest.getId() == id)
+                .findFirst();
     }
 
     @Override
     public Guest save(String name, String purpose) {
-        Guest guest = new Guest(idCounter++, name, purpose);
-        guests.add(guest);
+        Guest guest = new Guest(nextId(), name, purpose);
+        data.add(guest);
         return guest;
     }
 
     @Override
     public boolean deleteById(int id) {
-        return guests.removeIf(g -> g.getId() == id);
+        return data.removeIf(guest -> guest.getId() == id);
     }
 
-    // Tempatkan method update di sini
-    @Override
-    public boolean update(Guest guest) {
-        for (int i = 0; i < guests.size(); i++) {
-            if (guests.get(i).getId() == guest.getId()) {
-                guests.set(i, guest);
-                return true;
-            }
-        }
-        return false;
+    /** Menghasilkan ID unik berikutnya. */
+    private int nextId() {
+        return ++idCounter;
     }
 }

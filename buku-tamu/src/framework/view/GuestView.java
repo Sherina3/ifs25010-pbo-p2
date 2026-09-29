@@ -3,80 +3,105 @@ package framework.view;
 import adapter.presenter.GuestPresenter;
 import framework.util.InputUtil;
 import usecase.GuestUseCase;
-import domain.entity.Guest;
-import java.util.List;
 
+/**
+ * Tampilan konsol buku tamu.
+ * Menerima input user, memanggil use case, dan menampilkan hasil via presenter.
+ */
 public class GuestView {
     private final GuestUseCase guestUseCase;
-    private final GuestPresenter guestPresenter;
+    private final GuestPresenter presenter;
 
-    public GuestView(GuestUseCase guestUseCase, GuestPresenter guestPresenter) {
+    public GuestView(GuestUseCase guestUseCase, GuestPresenter presenter) {
         this.guestUseCase = guestUseCase;
-        this.guestPresenter = guestPresenter;
+        this.presenter = presenter;
     }
 
+    /** Menampilkan menu utama dan loop interaksi user. */
     public void show() {
-        while (true) {
-            // 1. Tampilkan daftar tamu
-            List<Guest> guests = guestUseCase.getAllGuests();
-            guestPresenter.showGuests(guests);
+        boolean running = true;
+        while (running) {
+            presenter.showGuests(guestUseCase.getAllGuests());
+            printMenu();
 
-            // 2. Tampilkan menu
-            guestPresenter.showMenu();
-
-            // 3. Prompt pilih menu
-            String menuOption = InputUtil.input("Pilih : ");
-
-            if ("1".equals(menuOption)) {
-                System.out.println("[Mendaftarkan Tamu]");
-                String name = InputUtil.input("Nama (x Jika Batal) : ");
-                if ("x".equalsIgnoreCase(name)) {
-                    continue;
-                }
-
-                String purpose = InputUtil.input("Tujuan Kunjungan (x Jika Batal) : ");
-                if ("x".equalsIgnoreCase(purpose)) {
-                    continue;
-                }
-
-                Guest createdGuest = guestUseCase.addGuest(name, purpose);
-                guestPresenter.showAddSuccess(createdGuest);
-                System.out.println();
-
-            } else if ("2".equals(menuOption)) {
-                System.out.println("[Mencari Tamu]");
-                String keyword = InputUtil.input("Nama (x Jika Batal) : ");
-                if ("x".equalsIgnoreCase(keyword)) {
-                    continue;
-                }
-
-                List<Guest> searchResults = guestUseCase.searchGuests(keyword);
-                guestPresenter.showSearchResults(keyword, searchResults);
-                System.out.println();
-
-            } else if ("3".equals(menuOption)) {
-                System.out.println("[Menghapus Tamu]");
-                String idInput = InputUtil.input("[ID Tamu] yang dihapus (x Jika Batal) : ");
-                if ("x".equalsIgnoreCase(idInput)) {
-                    continue;
-                }
-
-                try {
-                    int id = Integer.parseInt(idInput);
-                    boolean isDeleted = guestUseCase.deleteGuest(id);
-                    if (isDeleted) {
-                        System.out.println("Berhasil menghapus tamu.");
-                    } else {
-                        System.out.println("Gagal menghapus tamu.");
-                    }
-                } catch (NumberFormatException e) {
-                    // Penanganan jika ID bukan angka
-                }
-                System.out.println();
-
-            } else if ("x".equalsIgnoreCase(menuOption)) {
-                break;
+            String input = InputUtil.input("Pilih");
+            switch (input) {
+                case "1" -> registerGuest();
+                case "2" -> searchGuest();
+                case "3" -> removeGuest();
+                case "x" -> running = false;
+                default -> presenter.showInvalidChoice();
             }
+
+            if (running) {
+                System.out.println();
+            }
+        }
+    }
+
+    private void printMenu() {
+        System.out.println("Menu:");
+        System.out.println("1. Daftarkan Tamu");
+        System.out.println("2. Cari");
+        System.out.println("3. Hapus");
+        System.out.println("x. Keluar");
+    }
+
+    /** Form pendaftaran tamu baru. */
+    private void registerGuest() {
+        System.out.println("[Mendaftarkan Tamu]");
+
+        String name = InputUtil.input("Nama (x Jika Batal)");
+        if (name.equals("x")) {
+            return;
+        }
+
+        String purpose = InputUtil.input("Tujuan Kunjungan (x Jika Batal)");
+        if (purpose.equals("x")) {
+            return;
+        }
+
+        presenter.showRegisterSuccess(guestUseCase.registerGuest(name, purpose));
+    }
+
+    /** Form cari tamu berdasarkan nama. */
+    private void searchGuest() {
+        System.out.println("[Mencari Tamu]");
+        String keyword = InputUtil.input("Kata Kunci (x Jika Batal)");
+
+        if (!keyword.equals("x")) {
+            presenter.showSearchResults(guestUseCase.searchGuests(keyword), keyword);
+        }
+    }
+
+    /** Form hapus tamu berdasarkan ID. */
+    private void removeGuest() {
+        System.out.println("[Menghapus Tamu]");
+        String strId = InputUtil.input("[ID Tamu] yang dihapus (x Jika Batal)");
+
+        if (strId.equals("x")) {
+            return;
+        }
+
+        Integer id = parseId(strId);
+        if (id == null) {
+            return;
+        }
+
+        if (guestUseCase.removeGuest(id)) {
+            presenter.showRemoveSuccess();
+        } else {
+            presenter.showRemoveFailed(id);
+        }
+    }
+
+    /** Mengonversi input menjadi ID; jika gagal, error ditampilkan dan null dikembalikan. */
+    private Integer parseId(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            presenter.showInvalidId();
+            return null;
         }
     }
 }

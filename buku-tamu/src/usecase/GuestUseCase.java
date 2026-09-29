@@ -2,40 +2,37 @@ package usecase;
 
 import domain.entity.Guest;
 import domain.repository.IGuestRepository;
-import java.util.ArrayList;
 import java.util.List;
 
+/** Use case buku tamu. Tidak melakukan I/O — hanya memproses data. */
 public class GuestUseCase {
-    private final IGuestRepository repository;
+    /** Port repository yang di-inject dari luar (Dependency Inversion). */
+    private final IGuestRepository guestRepository;
 
-    public GuestUseCase(IGuestRepository repository) {
-        this.repository = repository;
+    public GuestUseCase(IGuestRepository guestRepository) {
+        this.guestRepository = guestRepository;
     }
 
+    /** Mengambil semua tamu. */
     public List<Guest> getAllGuests() {
-        return repository.findAll();
+        return guestRepository.findAll();
     }
 
-    public Guest addGuest(String name, String purpose) {
-        return repository.save(name, purpose);
+    /** Mendaftarkan tamu baru dan mengembalikan entity yang tersimpan. */
+    public Guest registerGuest(String name, String purpose) {
+        return guestRepository.save(name, purpose);
     }
 
-    // --- Tambahkan Method Pencarian di Bawah Ini ---
+    /** Mencari tamu yang namanya mengandung kata kunci (case-insensitive). */
     public List<Guest> searchGuests(String keyword) {
-        List<Guest> allGuests = repository.findAll();
-        List<Guest> results = new ArrayList<>();
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            for (Guest guest : allGuests) {
-                if (guest.getName().toLowerCase().contains(keyword.toLowerCase())) {
-                    results.add(guest);
-                }
-            }
-        }
-        return results;
+        String lowerKeyword = keyword.toLowerCase();
+        return guestRepository.findAll().stream()
+                .filter(guest -> guest.getName().toLowerCase().contains(lowerKeyword))
+                .toList();
     }
 
-    // --- Tambahkan Method Penghapusan di Bawah Ini ---
-    public boolean deleteGuest(int id) {
-        return repository.deleteById(id);
+    /** Menghapus tamu berdasarkan ID. */
+    public boolean removeGuest(int id) {
+        return guestRepository.deleteById(id);
     }
 }
