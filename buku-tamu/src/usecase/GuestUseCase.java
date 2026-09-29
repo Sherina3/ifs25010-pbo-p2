@@ -2,6 +2,7 @@ package usecase;
 
 import domain.entity.Guest;
 import domain.repository.IGuestRepository;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GuestUseCase {
@@ -17,5 +18,24 @@ public class GuestUseCase {
 
     public Guest addGuest(String name, String purpose) {
         return repository.save(name, purpose);
+    }
+
+    // --- Tambahkan Method Pencarian di Bawah Ini ---
+    public List<Guest> searchGuests(String keyword) {
+        List<Guest> allGuests = repository.findAll();
+        List<Guest> results = new ArrayList<>();
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            for (Guest guest : allGuests) {
+                if (guest.getName().toLowerCase().contains(keyword.toLowerCase())) {
+                    results.add(guest);
+                }
+            }
+        }
+        return results;
+    }
+
+    // --- Tambahkan Method Penghapusan di Bawah Ini ---
+    public boolean deleteGuest(int id) {
+        return repository.deleteById(id);
     }
 }
