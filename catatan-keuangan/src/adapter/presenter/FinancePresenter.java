@@ -19,11 +19,11 @@ public class FinancePresenter {
 
     public void showSingleTransaction(Transaction t) {
         String typeStr = (t.getType() == TransactionType.PEMASUKAN) ? "Pemasukan" : "Pengeluaran";
-        System.out.println(t.getId() + " | " + t.getDescription() + " | Rp" + (long)t.getAmount() + " | " + typeStr);
+        System.out.println(t.getId() + " | " + t.getDescription() + " | Rp " + (long)t.getAmount() + " | " + typeStr);
     }
 
     public void showBalance(double balance) {
-        System.out.println("Saldo: Rp" + (long)balance);
+        System.out.println("Saldo: Rp " + (long)balance);
     }
 
     public void showMessage(String message) {
