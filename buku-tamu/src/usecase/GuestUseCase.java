@@ -18,15 +18,4 @@ public class GuestUseCase {
     public Guest addGuest(String name, String purpose) {
         return repository.save(name, purpose);
     }
-
-    public boolean removeGuest(int id) {
-        return repository.deleteById(id);
-    }
-
-    public List<Guest> searchGuests(String keyword) {
-        String lowerKeyword = keyword.toLowerCase();
-        return repository.findAll().stream()
-                .filter(g -> g.getName().toLowerCase().contains(lowerKeyword))
-                .toList();
-    }
 }

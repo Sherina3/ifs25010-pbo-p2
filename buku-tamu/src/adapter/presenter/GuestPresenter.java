@@ -1,49 +1,30 @@
 package adapter.presenter;
 
 import domain.entity.Guest;
+import usecase.GuestUseCase;
 import java.util.List;
 
 public class GuestPresenter {
-    private String format(Guest g) {
-        return String.format("%d | %s | %s", g.getId(), g.getName(), g.getPurpose());
+    private final GuestUseCase useCase;
+
+    public GuestPresenter(GuestUseCase useCase) {
+        this.useCase = useCase;
     }
 
-    private void printList(List<Guest> list, String header, String emptyMessage) {
-        System.out.println(header);
-        if (list.isEmpty()) {
-            System.out.println(emptyMessage);
+    public void showAllGuests() {
+        List<Guest> guests = useCase.getAllGuests();
+        System.out.println("Daftar Tamu:");
+        if (guests.isEmpty()) {
+            System.out.println("- Data tamu belum tersedia!");
         } else {
-            for (Guest g : list) {
-                System.out.println(format(g));
+            for (Guest guest : guests) {
+                System.out.println(guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
             }
         }
     }
 
-    public void showGuests(List<Guest> list) {
-        printList(list, "Daftar Tamu:", "- Data tamu belum tersedia!");
-    }
-
-    public void showSearchResults(List<Guest> list, String keyword) {
-        printList(list, "Hasil Pencarian: \"" + keyword + "\"", "- Tamu tidak ditemukan!");
-    }
-
-    public void showAddSuccess(Guest g) {
-        System.out.printf("Berhasil mendaftarkan tamu: %s%n", format(g));
-    }
-
-    public void showRemoveSuccess() {
-        System.out.println("Berhasil menghapus tamu.");
-    }
-
-    public void showRemoveFailed(int id) {
-        System.out.printf("[!] Gagal menghapus tamu dengan ID: %d.%n", id);
-    }
-
-    public void showInvalidChoice() {
-        System.out.println("[!] Pilihan tidak dimengerti.");
-    }
-
-    public void showInvalidId() {
-        System.out.println("[!] ID tidak valid!");
+    public void addGuest(String name, String purpose) {
+        Guest guest = useCase.addGuest(name, purpose);
+        System.out.println("Berhasil mendaftarkan tamu: " + guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
     }
 }
