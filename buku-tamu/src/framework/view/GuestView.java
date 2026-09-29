@@ -78,8 +78,8 @@ public class GuestView {
                 break;
 
             } else {
-                // Penanganan jika opsi menu yang dimasukkan tidak valid
-                System.out.println("Pilihan tidak dimengerti.");
+                // Perbaikan di sini: Menambahkan "[!] "
+                System.out.println("[!] Pilihan tidak dimengerti.");
                 System.out.println();
             }
         }
