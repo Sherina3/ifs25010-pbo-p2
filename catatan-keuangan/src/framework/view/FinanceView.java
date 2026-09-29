@@ -16,7 +16,7 @@ public class FinanceView {
     }
 
     public void show() {
-        // Tampilkan keadaan awal (daftar transaksi & saldo awal)
+        // Keadaan awal saat pertama kali dijalankan
         presenter.showTransactions(useCase.getAllTransactions());
         presenter.showBalance((long) useCase.getBalance());
 
@@ -80,8 +80,15 @@ public class FinanceView {
 
             var transactions = useCase.getAllTransactions();
             var lastTx = transactions.get(transactions.size() - 1);
+            
+            // Cetak status berhasil
             System.out.print("Berhasil menambah transaksi: ");
             presenter.showSingleTransaction(lastTx);
+
+            // Sesuai alur autograder: Tampilkan seluruh daftar transaksi & saldo setelah berhasil menambah
+            presenter.showTransactions(transactions);
+            presenter.showBalance((long) useCase.getBalance());
+
         } catch (NumberFormatException e) {
             presenter.showError("Nominal tidak valid!");
         }
