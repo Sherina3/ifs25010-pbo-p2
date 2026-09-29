@@ -57,6 +57,8 @@ public class FinanceView {
                     presenter.showError("[!] Pilihan tidak dimengerti.");
                     break;
             }
+
+            System.out.println();
         }
     }
 
@@ -87,7 +89,6 @@ public class FinanceView {
             // Hanya cetak konfirmasi berhasil tambah
             System.out.print("Berhasil menambah transaksi: ");
             presenter.showSingleTransaction(lastTx);
-            System.out.println();
 
         } catch (NumberFormatException e) {
             presenter.showError("[!] Jumlah tidak valid!");
@@ -103,8 +104,8 @@ public class FinanceView {
 
     private void sortTransactions() {
         System.out.println("[Urutkan Transaksi]");
-        System.out.println("1. Jumlah (Terbesar)");
-        System.out.println("2. Jumlah (Terkecil)");
+        System.out.println("1. Jumlah (Terkecil)");
+        System.out.println("2. Jumlah (Terbesar)");
         System.out.println("3. Pemasukan Dulu");
         System.out.println("4. Pengeluaran Dulu");
         System.out.println("x. Batal");
@@ -113,8 +114,8 @@ public class FinanceView {
 
         SortOption sortOption;
         switch (opt) {
-            case "1": sortOption = SortOption.AMOUNT_DESC; break;
-            case "2": sortOption = SortOption.AMOUNT_ASC; break;
+            case "1": sortOption = SortOption.AMOUNT_ASC; break;
+            case "2": sortOption = SortOption.AMOUNT_DESC; break;
             case "3": sortOption = SortOption.INCOME_FIRST; break;
             case "4": sortOption = SortOption.EXPENSE_FIRST; break;
             default:
