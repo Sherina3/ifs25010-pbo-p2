@@ -55,7 +55,7 @@ public class GuestView {
 
                 List<Guest> searchResults = guestUseCase.searchGuests(keyword);
                 guestPresenter.showSearchResults(keyword, searchResults);
-                System.out.println(); // <-- PASTIKAN BARIS INI ADA SETELAH TAMPILAN HASIL PENCARIAN
+                System.out.println(); // <-- PASTIKAN System.out.println(); INI ADA DI SINI
 
             } else if ("3".equals(menuOption)) {
                 System.out.println("[Menghapus Tamu]");
