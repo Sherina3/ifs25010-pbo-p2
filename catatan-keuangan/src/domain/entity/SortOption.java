@@ -1,8 +1,8 @@
 package domain.entity;
 
 public enum SortOption {
-    ID_ASC,
-    ID_DESC,
     AMOUNT_ASC,
-    AMOUNT_DESC
+    AMOUNT_DESC,
+    INCOME_FIRST,
+    EXPENSE_FIRST
 }

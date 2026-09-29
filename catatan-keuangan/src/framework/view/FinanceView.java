@@ -48,7 +48,7 @@ public class FinanceView {
                     sortTransactions();
                     break;
                 case "5":
-                    presenter.showBalance((long) useCase.getBalance());
+                    presenter.showCurrentBalance(useCase.getBalance());
                     break;
                 case "6":
                     deleteTransaction();
@@ -94,21 +94,28 @@ public class FinanceView {
     }
 
     private void searchTransaction() {
-        String query = InputUtil.input("Cari");
+        System.out.println("[Cari Transaksi]");
+        String query = InputUtil.input("Kata Kunci (x Jika Batal)");
         if (query.equalsIgnoreCase("x")) return;
         presenter.showSearchResults(query, useCase.searchTransactions(query));
     }
 
     private void sortTransactions() {
-        String opt = InputUtil.input("Urutkan (1: ID ASC, 2: ID DESC, 3: Nominal ASC, 4: Nominal DESC)");
+        System.out.println("[Urutkan Transaksi]");
+        System.out.println("1. Jumlah (Terbesar)");
+        System.out.println("2. Jumlah (Terkecil)");
+        System.out.println("3. Pemasukan Dulu");
+        System.out.println("4. Pengeluaran Dulu");
+        System.out.println("x. Batal");
+        String opt = InputUtil.input("Pilih");
         if (opt.equalsIgnoreCase("x")) return;
 
         SortOption sortOption;
         switch (opt) {
-            case "1": sortOption = SortOption.ID_ASC; break;
-            case "2": sortOption = SortOption.ID_DESC; break;
-            case "3": sortOption = SortOption.AMOUNT_ASC; break;
-            case "4": sortOption = SortOption.AMOUNT_DESC; break;
+            case "1": sortOption = SortOption.AMOUNT_DESC; break;
+            case "2": sortOption = SortOption.AMOUNT_ASC; break;
+            case "3": sortOption = SortOption.INCOME_FIRST; break;
+            case "4": sortOption = SortOption.EXPENSE_FIRST; break;
             default:
                 presenter.showError("[!] Pilihan tidak valid!");
                 return;
@@ -117,7 +124,8 @@ public class FinanceView {
     }
 
     private void deleteTransaction() {
-        String idStr = InputUtil.input("ID Transaksi yang dihapus");
+        System.out.println("[Hapus Transaksi]");
+        String idStr = InputUtil.input("ID Transaksi (x Jika Batal)");
         if (idStr.equalsIgnoreCase("x")) return;
 
         try {

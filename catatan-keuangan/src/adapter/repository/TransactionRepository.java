@@ -2,6 +2,7 @@ package adapter.repository;
 
 import domain.entity.SortOption;
 import domain.entity.Transaction;
+import domain.entity.TransactionType;
 import domain.repository.ITransactionRepository;
 
 import java.util.ArrayList;
@@ -47,17 +48,17 @@ public class TransactionRepository implements ITransactionRepository {
     public List<Transaction> getSortedTransactions(SortOption sortOption) {
         List<Transaction> sortedList = new ArrayList<>(transactions);
         switch (sortOption) {
-            case ID_ASC:
-                sortedList.sort(Comparator.comparingInt(Transaction::getId));
-                break;
-            case ID_DESC:
-                sortedList.sort((t1, t2) -> Integer.compare(t2.getId(), t1.getId()));
-                break;
             case AMOUNT_ASC:
                 sortedList.sort(Comparator.comparingDouble(Transaction::getAmount));
                 break;
             case AMOUNT_DESC:
-                sortedList.sort((t1, t2) -> Double.compare(t2.getAmount(), t1.getAmount()));
+                sortedList.sort(Comparator.comparingDouble(Transaction::getAmount).reversed());
+                break;
+            case INCOME_FIRST:
+                sortedList.sort(Comparator.comparing(t -> t.getType() != TransactionType.PEMASUKAN));
+                break;
+            case EXPENSE_FIRST:
+                sortedList.sort(Comparator.comparing(t -> t.getType() != TransactionType.PENGELUARAN));
                 break;
         }
         return sortedList;

@@ -42,6 +42,10 @@ public class FinancePresenter {
         System.out.println("Saldo: Rp " + balance);
     }
 
+    public void showCurrentBalance(double balance) {
+        System.out.println("Saldo saat ini: Rp " + (long) balance);
+    }
+
     public void showMessage(String message) {
         System.out.println(message);
     }
