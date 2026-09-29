@@ -31,6 +31,8 @@ public class GuestPresenter {
         System.out.println("Berhasil mendaftarkan tamu: " + guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
     }
 
+    // --- PERBAIKAN DI SINI ---
+    // Pastikan ada spasi setelah titik dua: "Hasil Pencarian : \""
     public void showSearchResults(String keyword, List<Guest> results) {
         System.out.println("Hasil Pencarian : \"" + keyword + "\"");
         if (results != null && !results.isEmpty()) {
