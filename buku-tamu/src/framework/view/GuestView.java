@@ -43,17 +43,18 @@ public class GuestView {
                 guestPresenter.showAddSuccess(createdGuest);
                 System.out.println();
 
-            } else if ("2".equals(menuOption)) {
-                System.out.println("[Mencari Tamu]");
-                // Pastikan prompt memiliki spasi di akhir ": "
-                String keyword = InputUtil.input("Nama (x Jika Batal) : ");
-                if ("x".equalsIgnoreCase(keyword)) {
-                    continue;
-                }
+} else if ("2".equals(menuOption)) {
+    System.out.println("[Mencari Tamu]");
+    // Tepat 1 spasi setelah titik dua: "Nama (x Jika Batal) : "
+    String keyword = InputUtil.input("Nama (x Jika Batal) : ");
+    if ("x".equalsIgnoreCase(keyword)) {
+        continue;
+    }
 
-                List<Guest> searchResults = guestUseCase.searchGuests(keyword);
-                guestPresenter.showSearchResults(keyword, searchResults);
-                System.out.println();
+    List<Guest> searchResults = guestUseCase.searchGuests(keyword);
+    guestPresenter.showSearchResults(keyword, searchResults);
+    System.out.println();
+}
 
             } else if ("3".equals(menuOption)) {
                 System.out.println("[Menghapus Tamu]");

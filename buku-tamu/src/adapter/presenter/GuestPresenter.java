@@ -31,9 +31,8 @@ public class GuestPresenter {
         System.out.println("Berhasil mendaftarkan tamu: " + guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
     }
 
-    // --- PERBAIKAN METHOD INI ---
+    // Pastikan tidak ada spasi sebelum "Hasil"
     public void showSearchResults(String keyword, List<Guest> results) {
-        // Cetak header hasil pencarian
         System.out.println("Hasil Pencarian : \"" + keyword + "\"");
         if (results != null && !results.isEmpty()) {
             for (Guest guest : results) {
