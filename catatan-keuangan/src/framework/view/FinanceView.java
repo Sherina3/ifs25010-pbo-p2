@@ -87,6 +87,7 @@ public class FinanceView {
             // Hanya cetak konfirmasi berhasil tambah
             System.out.print("Berhasil menambah transaksi: ");
             presenter.showSingleTransaction(lastTx);
+            System.out.println();
 
         } catch (NumberFormatException e) {
             presenter.showError("[!] Jumlah tidak valid!");
