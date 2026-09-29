@@ -1,44 +1,39 @@
-package adapter.presenter;
+package adapter.repository;
 
 import domain.entity.Guest;
+import usecase.repository.IGuestRepository;
+import java.util.ArrayList;
 import java.util.List;
 
-public class GuestPresenter {
+public class GuestRepository implements IGuestRepository {
+    private final List<Guest> database = new ArrayList<>();
+    private int idCounter = 1;
 
-    public GuestPresenter() {
+    @Override
+    public Guest addGuest(String name, String purpose) {
+        Guest guest = new Guest(idCounter++, name, purpose);
+        database.add(guest);
+        return guest;
     }
 
-    public void showGuests(List<Guest> guests) {
-        System.out.println("Daftar Tamu:");
-        if (guests == null || guests.isEmpty()) {
-            System.out.println("- Data tamu belum tersedia!");
-        } else {
-            for (Guest guest : guests) {
-                System.out.println(guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
+    @Override
+    public List<Guest> getAllGuests() {
+        return database;
+    }
+
+    @Override
+    public List<Guest> searchGuests(String keyword) {
+        List<Guest> results = new ArrayList<>();
+        for (Guest guest : database) {
+            if (guest.getName().toLowerCase().contains(keyword.toLowerCase())) {
+                results.add(guest);
             }
         }
+        return results;
     }
 
-    public void showMenu() {
-        System.out.println("Menu:");
-        System.out.println("1. Daftarkan");
-        System.out.println("2. Cari");
-        System.out.println("3. Hapus");
-        System.out.println("x. Keluar");
-    }
-
-    public void showAddSuccess(Guest guest) {
-        System.out.println("Berhasil mendaftarkan tamu: " + guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
-    }
-
-    // --- PERBAIKAN PADA METHOD INI ---
-    public void showSearchResults(String keyword, List<Guest> results) {
-        // Cetak hasil pencarian
-        System.out.println("Hasil Pencarian : \"" + keyword + "\"");
-        if (results != null && !results.isEmpty()) {
-            for (Guest guest : results) {
-                System.out.println(guest.getId() + " | " + guest.getName() + " | " + guest.getPurpose());
-            }
-        }
+    @Override
+    public boolean deleteGuest(int id) {
+        return database.removeIf(guest -> guest.getId() == id);
     }
 }
