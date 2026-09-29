@@ -78,7 +78,6 @@ public class GuestView {
                 break;
 
             } else {
-                // Perbaikan di sini: Menambahkan "[!] "
                 System.out.println("[!] Pilihan tidak dimengerti.");
                 System.out.println();
             }
