@@ -16,6 +16,10 @@ public class FinanceView {
     }
 
     public void show() {
+        // Tampilkan keadaan awal (daftar transaksi & saldo awal) sebelum menu utama
+        presenter.showTransactions(useCase.getAllTransactions());
+        presenter.showBalance(useCase.getBalance());
+
         while (true) {
             System.out.println("Menu:");
             System.out.println("1. Tambah Pemasukan");
@@ -73,7 +77,7 @@ public class FinanceView {
         try {
             double amount = Double.parseDouble(amountStr);
             useCase.addTransaction(desc, amount, type);
-            // Ambil transaksi terakhir yang baru ditambahkan untuk ditampilkan
+            
             var transactions = useCase.getAllTransactions();
             var lastTx = transactions.get(transactions.size() - 1);
             System.out.print("Berhasil menambah transaksi: ");

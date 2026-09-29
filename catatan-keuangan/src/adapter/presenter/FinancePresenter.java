@@ -9,7 +9,7 @@ public class FinancePresenter {
     public void showTransactions(List<Transaction> transactions) {
         System.out.println("Daftar Transaksi:");
         if (transactions.isEmpty()) {
-            System.out.println("Belum ada transaksi.");
+            System.out.println("- Belum ada transaksi!");
             return;
         }
         for (Transaction t : transactions) {
