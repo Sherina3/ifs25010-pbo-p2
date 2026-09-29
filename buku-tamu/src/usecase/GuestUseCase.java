@@ -2,6 +2,7 @@ package usecase;
 
 import domain.entity.Guest;
 import domain.repository.IGuestRepository;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GuestUseCase {
@@ -19,14 +20,20 @@ public class GuestUseCase {
         return repository.save(name, purpose);
     }
 
-    public boolean removeGuest(int id) {
-        return repository.deleteById(id);
+    public List<Guest> searchGuests(String keyword) {
+        List<Guest> allGuests = repository.findAll();
+        List<Guest> results = new ArrayList<>();
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            for (Guest guest : allGuests) {
+                if (guest.getName().toLowerCase().contains(keyword.toLowerCase())) {
+                    results.add(guest);
+                }
+            }
+        }
+        return results;
     }
 
-    public List<Guest> searchGuests(String keyword) {
-        String lowerKeyword = keyword.toLowerCase();
-        return repository.findAll().stream()
-                .filter(g -> g.getName().toLowerCase().contains(lowerKeyword))
-                .toList();
+    public boolean deleteGuest(int id) {
+        return repository.deleteById(id);
     }
 }

@@ -1,34 +1,37 @@
 package domain.entity;
 
-/**
- * Entity inti yang merepresentasikan satu tamu.
- * Tidak ada fitur ubah data tamu, sehingga seluruh field bersifat final.
- */
 public class Guest {
-    /** ID unik tamu. */
-    private final int id;
+    private Integer id;
+    private String name;
+    private String purpose;
 
-    /** Nama tamu. */
-    private final String name;
-
-    /** Tujuan kunjungan. */
-    private final String purpose;
-
-    public Guest(int id, String name, String purpose) {
+    public Guest(Integer id, String name, String purpose) {
         this.id = id;
         this.name = name;
         this.purpose = purpose;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getPurpose() {
         return purpose;
+    }
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
     }
 }
