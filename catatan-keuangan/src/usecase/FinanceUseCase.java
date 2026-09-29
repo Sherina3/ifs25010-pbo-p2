@@ -3,35 +3,31 @@ package usecase;
 import domain.entity.SortOption;
 import domain.entity.Transaction;
 import domain.entity.TransactionType;
-import domain.repository.TransactionRepository;
+import domain.repository.FinanceRepository; // <-- Disesuaikan ke FinanceRepository
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class FinanceUseCase {
-    private final TransactionRepository repository;
+    private final FinanceRepository repository; // <-- Ubah ke FinanceRepository
 
-    public FinanceUseCase(TransactionRepository repository) {
+    public FinanceUseCase(FinanceRepository repository) { // <-- Ubah ke FinanceRepository
         this.repository = repository;
     }
 
-    // 1. Method addIncome (Pemasukan)
     public Transaction addIncome(String description, double amount) {
         return repository.addTransaction(description, amount, TransactionType.INCOME);
     }
 
-    // 2. Method addExpense (Pengeluaran)
     public Transaction addExpense(String description, double amount) {
         return repository.addTransaction(description, amount, TransactionType.EXPENSE);
     }
 
-    // 3. Method deleteTransaction (Hapus berdasarkan ID)
     public boolean deleteTransaction(int id) {
         return repository.deleteTransaction(id);
     }
 
-    // Method pendukung lainnya
     public List<Transaction> getAllTransactions() {
         return repository.getAllTransactions();
     }
