@@ -24,7 +24,7 @@ public class GuestView {
             // 2. Tampilkan menu
             guestPresenter.showMenu();
 
-            // 3. Prompt input menu
+            // 3. Prompt pilih menu
             String menuOption = InputUtil.input("Pilih : ");
 
             if ("1".equals(menuOption)) {
@@ -42,6 +42,38 @@ public class GuestView {
                 Guest createdGuest = guestUseCase.addGuest(name, purpose);
                 guestPresenter.showAddSuccess(createdGuest);
                 System.out.println();
+
+            } else if ("2".equals(menuOption)) {
+                System.out.println("[Mencari Tamu]");
+                String keyword = InputUtil.input("Nama (x Jika Batal) : ");
+                if ("x".equalsIgnoreCase(keyword)) {
+                    continue;
+                }
+
+                List<Guest> searchResults = guestUseCase.searchGuests(keyword); // Sesuaikan method usecase Anda
+                guestPresenter.showSearchResults(keyword, searchResults);
+                System.out.println();
+
+            } else if ("3".equals(menuOption)) {
+                System.out.println("[Menghapus Tamu]");
+                String idInput = InputUtil.input("ID tamu yang dihapus (x Jika Batal) : ");
+                if ("x".equalsIgnoreCase(idInput)) {
+                    continue;
+                }
+
+                try {
+                    int id = Integer.parseInt(idInput);
+                    boolean isDeleted = guestUseCase.deleteGuest(id); // Sesuaikan method usecase Anda
+                    if (isDeleted) {
+                        System.out.println("Berhasil menghapus tamu.");
+                    } else {
+                        System.out.println("Gagal menghapus tamu.");
+                    }
+                } catch (NumberFormatException e) {
+                    // Penanganan jika ID bukan angka
+                }
+                System.out.println();
+
             } else if ("x".equalsIgnoreCase(menuOption)) {
                 break;
             }
