@@ -31,13 +31,13 @@ public class GuestView {
                 System.out.println("[Mendaftarkan Tamu]");
                 String name = InputUtil.input("Nama (x Jika Batal) : ");
                 if ("x".equalsIgnoreCase(name)) {
-                    System.out.println(); // <-- TAMBAHKAN BARIS BARU SEBELUM CONTINUE
+                    System.out.println();
                     continue;
                 }
 
                 String purpose = InputUtil.input("Tujuan Kunjungan (x Jika Batal) : ");
                 if ("x".equalsIgnoreCase(purpose)) {
-                    System.out.println(); // <-- TAMBAHKAN BARIS BARU SEBELUM CONTINUE
+                    System.out.println();
                     continue;
                 }
 
@@ -49,19 +49,19 @@ public class GuestView {
                 System.out.println("[Mencari Tamu]");
                 String keyword = InputUtil.input("Nama (x Jika Batal) : ");
                 if ("x".equalsIgnoreCase(keyword)) {
-                    System.out.println(); // <-- TAMBAHKAN BARIS BARU SEBELUM CONTINUE
+                    System.out.println();
                     continue;
                 }
 
                 List<Guest> searchResults = guestUseCase.searchGuests(keyword);
                 guestPresenter.showSearchResults(keyword, searchResults);
-                System.out.println();
+                System.out.println(); // <-- PASTIKAN BARIS INI ADA SETELAH TAMPILAN HASIL PENCARIAN
 
             } else if ("3".equals(menuOption)) {
                 System.out.println("[Menghapus Tamu]");
                 String idInput = InputUtil.input("[ID Tamu] yang dihapus (x Jika Batal) : ");
                 if ("x".equalsIgnoreCase(idInput)) {
-                    System.out.println(); // <-- TAMBAHKAN BARIS BARU SEBELUM CONTINUE
+                    System.out.println();
                     continue;
                 }
 
