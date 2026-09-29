@@ -1,4 +1,3 @@
-
 package domain.entity;
 
 public class Transaction {
@@ -14,12 +13,31 @@ public class Transaction {
         this.type = type;
     }
 
-    public int getId() { return id; }
-    public String getDescription() { return description; }
-    public double getAmount() { return amount; }
-    public TransactionType getType() { return type; }
+    public int getId() {
+        return id;
+    }
 
-    public void changeDescription(String description) { this.description = description; }
-    public void changeAmount(double amount) { this.amount = amount; }
-    public void changeType(TransactionType type) { this.type = type; }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
+    }
 }
