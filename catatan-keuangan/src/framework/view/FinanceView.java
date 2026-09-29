@@ -16,10 +16,10 @@ public class FinanceView {
     }
 
     public void show() {
-        while (true) {
-            presenter.showTransactions(useCase.getAllTransactions());
-            presenter.showBalance((long) useCase.getBalance());
+        presenter.showTransactions(useCase.getAllTransactions());
+        presenter.showBalance((long) useCase.getBalance());
 
+        while (true) {
             System.out.println("Menu:");
             System.out.println("1. Tambah Pemasukan");
             System.out.println("2. Tambah Pengeluaran");
