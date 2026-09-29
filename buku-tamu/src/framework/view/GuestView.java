@@ -45,25 +45,27 @@ public class GuestView {
 
             } else if ("2".equals(menuOption)) {
                 System.out.println("[Mencari Tamu]");
+                // Pastikan prompt memiliki spasi di akhir ": "
                 String keyword = InputUtil.input("Nama (x Jika Batal) : ");
                 if ("x".equalsIgnoreCase(keyword)) {
                     continue;
                 }
 
-                List<Guest> searchResults = guestUseCase.searchGuests(keyword); // Sesuaikan method usecase Anda
+                List<Guest> searchResults = guestUseCase.searchGuests(keyword);
                 guestPresenter.showSearchResults(keyword, searchResults);
                 System.out.println();
 
             } else if ("3".equals(menuOption)) {
                 System.out.println("[Menghapus Tamu]");
-                String idInput = InputUtil.input("ID tamu yang dihapus (x Jika Batal) : ");
+                // Perubahan di sini: Menggunakan "[ID Tamu]"
+                String idInput = InputUtil.input("[ID Tamu] yang dihapus (x Jika Batal) : ");
                 if ("x".equalsIgnoreCase(idInput)) {
                     continue;
                 }
 
                 try {
                     int id = Integer.parseInt(idInput);
-                    boolean isDeleted = guestUseCase.deleteGuest(id); // Sesuaikan method usecase Anda
+                    boolean isDeleted = guestUseCase.deleteGuest(id);
                     if (isDeleted) {
                         System.out.println("Berhasil menghapus tamu.");
                     } else {
