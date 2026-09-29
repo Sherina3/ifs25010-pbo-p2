@@ -47,7 +47,7 @@ public class FinancePresenter {
     }
 
     public void showBalance(double balance) {
-        System.out.println("Saldo: Rp" + (long) balance);
+        System.out.println("Saldo: Rp " + (long) balance);
     }
 
     public void showSearchResults(List<Transaction> results, String keyword) {

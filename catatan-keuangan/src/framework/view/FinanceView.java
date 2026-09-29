@@ -2,9 +2,11 @@ package framework.view;
 
 import adapter.presenter.FinancePresenter;
 import domain.entity.SortOption;
-import domain.entity.TransactionType;
+import domain.entity.Transaction;
 import framework.util.InputUtil;
 import usecase.FinanceUseCase;
+
+import java.util.List;
 
 public class FinanceView {
     private final FinanceUseCase useCase;
@@ -16,129 +18,113 @@ public class FinanceView {
     }
 
     public void show() {
-        boolean running = true;
-        while (running) {
+        while (true) {
+            // Tampilkan daftar transaksi dan saldo
             presenter.showTransactions(useCase.getAllTransactions(), useCase.getBalance());
-            printMenu();
-            String input = InputUtil.input("Pilih");
-            switch (input) {
-                case "1" -> addTransaction(TransactionType.INCOME);
-                case "2" -> addTransaction(TransactionType.EXPENSE);
-                case "3" -> searchTransaction();
-                case "4" -> sortTransaction();
-                case "5" -> showBalance();
-                case "6" -> removeTransaction();
-                case "x" -> running = false;
-                default -> presenter.showInvalidChoice();
-            }
-            if (running)
+            presenter.showMenu();
+
+            String choice = InputUtil.input("Pilih : ");
+
+            if ("1".equals(choice)) {
+                System.out.println("[Tambah Pemasukan]");
+                String desc = InputUtil.input("Keterangan (x Jika Batal) : ");
+                if ("x".equalsIgnoreCase(desc)) {
+                    System.out.println();
+                    continue;
+                }
+
+                String amountStr = InputUtil.input("Jumlah : ");
+                try {
+                    double amount = Double.parseDouble(amountStr);
+                    Transaction t = useCase.addIncome(desc, amount);
+                    presenter.showAddSuccess(t);
+                } catch (NumberFormatException e) {
+                    presenter.showInvalidAmount();
+                }
                 System.out.println();
+
+            } else if ("2".equals(choice)) {
+                System.out.println("[Tambah Pengeluaran]");
+                String desc = InputUtil.input("Keterangan (x Jika Batal) : ");
+                if ("x".equalsIgnoreCase(desc)) {
+                    System.out.println();
+                    continue;
+                }
+
+                String amountStr = InputUtil.input("Jumlah : ");
+                try {
+                    double amount = Double.parseDouble(amountStr);
+                    Transaction t = useCase.addExpense(desc, amount);
+                    presenter.showAddSuccess(t);
+                } catch (NumberFormatException e) {
+                    presenter.showInvalidAmount();
+                }
+                System.out.println();
+
+            } else if ("3".equals(choice)) {
+                System.out.println("[Mencari Transaksi]");
+                String keyword = InputUtil.input("Keterangan (x Jika Batal) : ");
+                if ("x".equalsIgnoreCase(keyword)) {
+                    System.out.println();
+                    continue;
+                }
+
+                List<Transaction> results = useCase.searchTransactions(keyword);
+                presenter.showSearchResults(results, keyword);
+                System.out.println();
+
+            } else if ("4".equals(choice)) {
+                System.out.println("[Urutkan Transaksi]");
+                System.out.println("1. Jumlah Terbesar");
+                System.out.println("2. Jumlah Terkecil");
+                String sortChoice = InputUtil.input("Pilih Opsi : ");
+                
+                SortOption option = null;
+                if ("1".equals(sortChoice)) {
+                    option = SortOption.AMOUNT_DESC;
+                } else if ("2".equals(sortChoice)) {
+                    option = SortOption.AMOUNT_ASC;
+                }
+
+                if (option != null) {
+                    presenter.showSortedTransactions(useCase.sortTransactions(option), useCase.getBalance());
+                } else {
+                    presenter.showInvalidSortOption();
+                }
+                System.out.println();
+
+            } else if ("5".equals(choice)) {
+                presenter.showBalance(useCase.getBalance());
+                System.out.println();
+
+            } else if ("6".equals(choice)) {
+                System.out.println("[Menghapus Transaksi]");
+                String idStr = InputUtil.input("[ID Transaksi] yang dihapus (x Jika Batal) : ");
+                if ("x".equalsIgnoreCase(idStr)) {
+                    System.out.println();
+                    continue;
+                }
+
+                try {
+                    int id = Integer.parseInt(idStr);
+                    boolean isDeleted = useCase.deleteTransaction(id);
+                    if (isDeleted) {
+                        presenter.showRemoveSuccess();
+                    } else {
+                        presenter.showRemoveFailed(id);
+                    }
+                } catch (NumberFormatException e) {
+                    presenter.showInvalidId();
+                }
+                System.out.println();
+
+            } else if ("x".equalsIgnoreCase(choice)) {
+                break;
+
+            } else {
+                presenter.showInvalidChoice();
+                System.out.println();
+            }
         }
-    }
-
-    private void printMenu() {
-        System.out.println("Menu:");
-        System.out.println("1. Tambah Pemasukan");
-        System.out.println("2. Tambah Pengeluaran");
-        System.out.println("3. Cari");
-        System.out.println("4. Urutkan");
-        System.out.println("5. Lihat Saldo");
-        System.out.println("6. Hapus");
-        System.out.println("x. Keluar");
-    }
-
-    private void addTransaction(TransactionType type) {
-        System.out.println(type == TransactionType.INCOME ? "[Tambah Pemasukan]" : "[Tambah Pengeluaran]");
-        String description = InputUtil.input("Keterangan (x Jika Batal)");
-        if (description.equals("x"))
-            return;
-
-        String strAmount = InputUtil.input("Jumlah");
-        if (strAmount.equals("x"))
-            return;
-
-        Double amount = parseAmount(strAmount);
-        if (amount == null || amount <= 0) {
-            presenter.showInvalidAmount();
-            return;
-        }
-
-        presenter.showAddSuccess(useCase.addTransaction(description, amount, type));
-    }
-
-    private void searchTransaction() {
-        System.out.println("[Cari Transaksi]");
-        String keyword = InputUtil.input("Kata Kunci (x Jika Batal)");
-        if (!keyword.equals("x")) {
-            presenter.showSearchResults(useCase.searchTransactions(keyword), keyword);
-        }
-    }
-
-    private void sortTransaction() {
-        System.out.println("[Urutkan Transaksi]");
-        System.out.println("1. Jumlah (Terkecil)");
-        System.out.println("2. Jumlah (Terbesar)");
-        System.out.println("3. Pemasukan Dulu");
-        System.out.println("4. Pengeluaran Dulu");
-        System.out.println("x. Batal");
-        String input = InputUtil.input("Pilih");
-        if (input.equals("x"))
-            return;
-
-        SortOption option = mapSortOption(input);
-        if (option == null) {
-            presenter.showInvalidSortOption();
-            return;
-        }
-
-        presenter.showSortedTransactions(useCase.sortTransactions(option), useCase.getBalance());
-    }
-
-    private void showBalance() {
-        System.out.printf("Saldo saat ini: Rp %.0f%n", useCase.getBalance());
-    }
-
-    private void removeTransaction() {
-        System.out.println("[Hapus Transaksi]");
-        String strId = InputUtil.input("ID Transaksi (x Jika Batal)");
-        if (strId.equals("x"))
-            return;
-
-        Integer id = parseId(strId);
-        if (id == null)
-            return;
-
-        if (useCase.removeTransaction(id)) {
-            presenter.showRemoveSuccess();
-        } else {
-            presenter.showRemoveFailed(id);
-        }
-    }
-
-    private Integer parseId(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            presenter.showInvalidId();
-            return null;
-        }
-    }
-
-    private Double parseAmount(String value) {
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
-    private SortOption mapSortOption(String input) {
-        return switch (input) {
-            case "1" -> SortOption.AMOUNT_ASC;
-            case "2" -> SortOption.AMOUNT_DESC;
-            case "3" -> SortOption.INCOME_FIRST;
-            case "4" -> SortOption.EXPENSE_FIRST;
-            default -> null;
-        };
     }
 }
