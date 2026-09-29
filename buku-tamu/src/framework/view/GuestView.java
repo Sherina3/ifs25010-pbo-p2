@@ -24,7 +24,7 @@ public class GuestView {
             // 2. Tampilkan menu
             guestPresenter.showMenu();
 
-            // 3. Prompt pilih menu
+            // 3. Prompt pilihan menu
             String menuOption = InputUtil.input("Pilih : ");
 
             if ("1".equals(menuOption)) {
@@ -67,7 +67,7 @@ public class GuestView {
                     if (isDeleted) {
                         System.out.println("Berhasil menghapus tamu.");
                     } else {
-                        System.out.println("[!] ID tidak valid!");
+                        System.out.println("[!] Gagal menghapus tamu dengan ID: " + id + ".");
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("[!] ID tidak valid!");
