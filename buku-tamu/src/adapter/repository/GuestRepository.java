@@ -36,10 +36,11 @@ public class GuestRepository implements IGuestRepository {
         return guests.removeIf(g -> g.getId() == id);
     }
 
+    // Tempatkan method update di sini
     @Override
     public boolean update(Guest guest) {
         for (int i = 0; i < guests.size(); i++) {
-            if (guests.get(i).getId().equals(guest.getId())) {
+            if (guests.get(i).getId() == guest.getId()) {
                 guests.set(i, guest);
                 return true;
             }
