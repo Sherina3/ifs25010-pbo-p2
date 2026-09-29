@@ -11,7 +11,6 @@ public class App {
         FinancePresenter presenter = new FinancePresenter();
         FinanceView view = new FinanceView(useCase, presenter);
 
-        // Ubah dari view.show() menjadi view.showMenu()
-        view.showMenu(); 
+        view.show();
     }
 }
