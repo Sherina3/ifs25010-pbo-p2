@@ -44,10 +44,18 @@ public class GuestView {
         String name = InputUtil.input("Nama (x Jika Batal)");
         if (name.equals("x"))
             return;
+        if (name.isBlank()) {
+            System.out.println("[!] Nama tidak boleh kosong!");
+            return;
+        }
 
         String purpose = InputUtil.input("Tujuan Kunjungan (x Jika Batal)");
         if (purpose.equals("x"))
             return;
+        if (purpose.isBlank()) {
+            System.out.println("[!] Tujuan kunjungan tidak boleh kosong!");
+            return;
+        }
 
         presenter.showAddSuccess(useCase.addGuest(name, purpose));
     }

@@ -49,6 +49,10 @@ public class ItemView {
         String name = InputUtil.input("Nama (x Jika Batal)");
         if (name.equals("x"))
             return;
+        if (name.isBlank()) {
+            System.out.println("[!] Nama barang tidak boleh kosong!");
+            return;
+        }
 
         String strQuantity = InputUtil.input("Jumlah");
         if (strQuantity.equals("x"))
@@ -63,6 +67,10 @@ public class ItemView {
         String category = InputUtil.input("Kategori (x Jika Batal)");
         if (category.equals("x"))
             return;
+        if (category.isBlank()) {
+            System.out.println("[!] Kategori tidak boleh kosong!");
+            return;
+        }
 
         presenter.showAddSuccess(useCase.addItem(name, quantity, category));
     }

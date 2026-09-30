@@ -47,13 +47,25 @@ public class ContactView {
         System.out.println("[Menambah Kontak]");
         String name = InputUtil.input("Nama (x Jika Batal)");
         if (name.equals("x")) return;
-        
-        String phone = InputUtil.input("Telepon");
+        if (name.isBlank()) {
+            System.out.println("[!] Nama tidak boleh kosong!");
+            return;
+        }
+
+        String phone = InputUtil.input("Telepon (x Jika Batal)");
         if (phone.equals("x")) return;
-        
-        String email = InputUtil.input("Email");
+        if (phone.isBlank()) {
+            System.out.println("[!] Nomor telepon tidak boleh kosong!");
+            return;
+        }
+
+        String email = InputUtil.input("Email (x Jika Batal)");
         if (email.equals("x")) return;
-        
+        if (email.isBlank()) {
+            System.out.println("[!] Email tidak boleh kosong!");
+            return;
+        }
+
         presenter.showAddSuccess(useCase.addContact(name, phone, email));
     }
 

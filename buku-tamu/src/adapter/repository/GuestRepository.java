@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 public class GuestRepository implements IGuestRepository {
+    // Penyimpanan data tamu secara in-memory
     private final List<Guest> data = new ArrayList<>();
+    // ID auto-increment dimulai dari 1
     private int idCounter = 0;
 
     @Override
     public List<Guest> findAll() {
+        // Kembalikan salinan defensif agar caller tidak dapat memodifikasi list internal
         return new ArrayList<>(data);
     }
 
@@ -34,5 +37,12 @@ public class GuestRepository implements IGuestRepository {
 
     @Override
     public void update(Guest guest) {
+        // Timpa elemen lama dengan objek yang telah diperbarui berdasarkan kecocokan ID
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getId() == guest.getId()) {
+                data.set(i, guest);
+                return;
+            }
+        }
     }
 }

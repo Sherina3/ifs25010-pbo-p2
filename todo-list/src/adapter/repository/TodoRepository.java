@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 public class TodoRepository implements ITodoRepository {
+    // Penyimpanan data todo secara in-memory
     private final List<Todo> todos = new ArrayList<>();
+    // ID auto-increment dimulai dari 1
     private int nextId = 1;
 
     @Override
     public List<Todo> findAll() {
+        // Kembalikan salinan defensif agar caller tidak dapat memodifikasi list internal
         return new ArrayList<>(todos);
     }
 
@@ -34,6 +37,7 @@ public class TodoRepository implements ITodoRepository {
 
     @Override
     public void update(Todo todo) {
+        // Timpa elemen lama dengan objek yang telah diperbarui berdasarkan kecocokan ID
         for (int i = 0; i < todos.size(); i++) {
             if (todos.get(i).getId() == todo.getId()) {
                 todos.set(i, todo);

@@ -49,14 +49,26 @@ public class ActivityView {
         String title = InputUtil.input("Judul (x Jika Batal)");
         if (title.equals("x"))
             return;
+        if (title.isBlank()) {
+            System.out.println("[!] Judul tidak boleh kosong!");
+            return;
+        }
 
         String day = InputUtil.input("Hari (x Jika Batal)");
         if (day.equals("x"))
             return;
+        if (day.isBlank()) {
+            System.out.println("[!] Hari tidak boleh kosong!");
+            return;
+        }
 
         String time = InputUtil.input("Waktu (x Jika Batal)");
         if (time.equals("x"))
             return;
+        if (time.isBlank()) {
+            System.out.println("[!] Waktu tidak boleh kosong!");
+            return;
+        }
 
         presenter.showAddSuccess(useCase.addActivity(title, day, time));
     }

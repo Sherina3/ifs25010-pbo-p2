@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 public class ItemRepository implements IItemRepository {
+    // Penyimpanan data barang secara in-memory
     private final List<Item> data = new ArrayList<>();
+    // ID auto-increment dimulai dari 1
     private int idCounter = 0;
 
     @Override
     public List<Item> findAll() {
+        // Kembalikan salinan defensif agar caller tidak dapat memodifikasi list internal
         return new ArrayList<>(data);
     }
 
@@ -34,5 +37,12 @@ public class ItemRepository implements IItemRepository {
 
     @Override
     public void update(Item item) {
+        // Timpa elemen lama dengan objek yang telah diperbarui berdasarkan kecocokan ID
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getId() == item.getId()) {
+                data.set(i, item);
+                return;
+            }
+        }
     }
 }

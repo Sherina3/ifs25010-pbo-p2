@@ -52,6 +52,10 @@ public class FinanceView {
         String description = InputUtil.input("Keterangan (x Jika Batal)");
         if (description.equals("x"))
             return;
+        if (description.isBlank()) {
+            System.out.println("[!] Keterangan tidak boleh kosong!");
+            return;
+        }
 
         String strAmount = InputUtil.input("Jumlah");
         if (strAmount.equals("x"))
