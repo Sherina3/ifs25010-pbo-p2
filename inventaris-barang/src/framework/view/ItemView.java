@@ -20,7 +20,6 @@ public class ItemView {
             presenter.showItems(useCase.getAllItems());
             printMenu();
             String input = InputUtil.input("Pilih");
-            try {
                 switch (input) {
                     case "1" -> addItem();
                     case "2" -> updateItem();
@@ -30,9 +29,6 @@ public class ItemView {
                     case "x" -> running = false;
                     default -> presenter.showInvalidChoice();
                 }
-            } catch (IllegalArgumentException e) {
-                presenter.showError(e.getMessage());
-            }
             if (running)
                 System.out.println();
         }
@@ -53,22 +49,35 @@ public class ItemView {
         String name = InputUtil.input("Nama (x Jika Batal)");
         if (name.equals("x"))
             return;
-        InputUtil.requireNonBlank(name, "Nama barang tidak boleh kosong!");
+        if (name.isBlank()) {
+            presenter.showError("Nama barang tidak boleh kosong!");
+            return;
+        }
 
         String strQuantity = InputUtil.input("Jumlah");
         if (strQuantity.equals("x"))
             return;
 
         // Parsing jumlah dipusatkan di InputUtil
-        int quantity = InputUtil.requireValidInteger(strQuantity);
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Jumlah harus lebih dari 0!");
+        int quantity;
+        try {
+            quantity = Integer.parseInt(strQuantity.trim());
+            if (quantity <= 0) {
+                presenter.showError("Jumlah stok tidak valid!");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            presenter.showError("Jumlah stok tidak valid!");
+            return;
         }
 
         String category = InputUtil.input("Kategori (x Jika Batal)");
         if (category.equals("x"))
             return;
-        InputUtil.requireNonBlank(category, "Kategori tidak boleh kosong!");
+        if (category.isBlank()) {
+            presenter.showError("Kategori tidak boleh kosong!");
+            return;
+        }
 
         presenter.showAddSuccess(useCase.addItem(name, quantity, category));
     }
@@ -80,14 +89,26 @@ public class ItemView {
             return;
 
         // Parsing ID dipusatkan di InputUtil
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
 
         String strQuantity = InputUtil.input("Jumlah Baru (Kosongkan jika tidak ingin mengubah)");
         Integer quantity = null;
         if (!strQuantity.isBlank()) {
-            quantity = InputUtil.requireValidInteger(strQuantity);
-            if (quantity <= 0) {
-                throw new IllegalArgumentException("Jumlah harus lebih dari 0!");
+            try {
+                quantity = Integer.parseInt(strQuantity.trim());
+                if (quantity <= 0) {
+                    presenter.showError("Jumlah stok tidak valid!");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                presenter.showError("Jumlah stok tidak valid!");
+                return;
             }
         }
 
@@ -133,7 +154,13 @@ public class ItemView {
         if (strId.equals("x"))
             return;
 
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
 
         if (useCase.removeItem(id)) {
             presenter.showRemoveSuccess();

@@ -19,7 +19,6 @@ public class GuestView {
             presenter.showGuests(useCase.getAllGuests());
             printMenu();
             String input = InputUtil.input("Pilih");
-            try {
                 switch (input) {
                     case "1" -> addGuest();
                     case "2" -> searchGuest();
@@ -27,9 +26,6 @@ public class GuestView {
                     case "x" -> running = false;
                     default -> presenter.showInvalidChoice();
                 }
-            } catch (IllegalArgumentException e) {
-                presenter.showError(e.getMessage());
-            }
             if (running)
                 System.out.println();
         }
@@ -48,12 +44,18 @@ public class GuestView {
         String name = InputUtil.input("Nama (x Jika Batal)");
         if (name.equals("x"))
             return;
-        InputUtil.requireNonBlank(name, "Nama tidak boleh kosong!");
+        if (name.isBlank()) {
+            presenter.showError("Nama tidak boleh kosong!");
+            return;
+        }
 
         String purpose = InputUtil.input("Tujuan Kunjungan (x Jika Batal)");
         if (purpose.equals("x"))
             return;
-        InputUtil.requireNonBlank(purpose, "Tujuan kunjungan tidak boleh kosong!");
+        if (purpose.isBlank()) {
+            presenter.showError("Tujuan kunjungan tidak boleh kosong!");
+            return;
+        }
 
         presenter.showAddSuccess(useCase.addGuest(name, purpose));
     }
@@ -73,7 +75,13 @@ public class GuestView {
             return;
 
         // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
 
         if (useCase.removeGuest(id)) {
             presenter.showRemoveSuccess();

@@ -12,26 +12,4 @@ public class InputUtil {
         }
         return scanner.nextLine();
     }
-
-    public static void requireNonBlank(String value, String message) {
-        if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    public static int requireValidId(String value) {
-        try {
-            return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("ID tidak valid!");
-        }
-    }
-
-    public static double requireValidDouble(String value) {
-        try {
-            return Double.parseDouble(value.trim());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Nominal tidak valid!");
-        }
-    }
 }

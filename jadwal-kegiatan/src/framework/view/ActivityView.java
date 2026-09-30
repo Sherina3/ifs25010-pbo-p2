@@ -20,7 +20,6 @@ public class ActivityView {
             presenter.showActivities(useCase.getAllActivities());
             printMenu();
             String input = InputUtil.input("Pilih");
-            try {
                 switch (input) {
                     case "1" -> addActivity();
                     case "2" -> updateActivity();
@@ -30,9 +29,6 @@ public class ActivityView {
                     case "x" -> running = false;
                     default -> presenter.showInvalidChoice();
                 }
-            } catch (IllegalArgumentException e) {
-                presenter.showError(e.getMessage());
-            }
             if (running)
                 System.out.println();
         }
@@ -53,17 +49,26 @@ public class ActivityView {
         String title = InputUtil.input("Judul (x Jika Batal)");
         if (title.equals("x"))
             return;
-        InputUtil.requireNonBlank(title, "Judul tidak boleh kosong!");
+        if (title.isBlank()) {
+            presenter.showError("Judul tidak boleh kosong!");
+            return;
+        }
 
         String day = InputUtil.input("Hari (x Jika Batal)");
         if (day.equals("x"))
             return;
-        InputUtil.requireNonBlank(day, "Hari tidak boleh kosong!");
+        if (day.isBlank()) {
+            presenter.showError("Hari tidak boleh kosong!");
+            return;
+        }
 
         String time = InputUtil.input("Waktu (x Jika Batal)");
         if (time.equals("x"))
             return;
-        InputUtil.requireNonBlank(time, "Waktu tidak boleh kosong!");
+        if (time.isBlank()) {
+            presenter.showError("Waktu tidak boleh kosong!");
+            return;
+        }
 
         presenter.showAddSuccess(useCase.addActivity(title, day, time));
     }
@@ -75,7 +80,13 @@ public class ActivityView {
             return;
 
         // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
 
         String newTitle = InputUtil.input("Judul Baru (Kosongkan jika tidak ingin mengubah)");
         String newDay = InputUtil.input("Hari Baru (Kosongkan jika tidak ingin mengubah)");
@@ -128,7 +139,13 @@ public class ActivityView {
         if (strId.equals("x"))
             return;
 
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
 
         if (useCase.removeActivity(id)) {
             presenter.showRemoveSuccess();

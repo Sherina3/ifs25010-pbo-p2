@@ -21,7 +21,6 @@ public class FinanceView {
             presenter.showTransactions(useCase.getAllTransactions(), useCase.getBalance());
             printMenu();
             String input = InputUtil.input("Pilih");
-            try {
                 switch (input) {
                     case "1" -> addTransaction(TransactionType.INCOME);
                     case "2" -> addTransaction(TransactionType.EXPENSE);
@@ -32,9 +31,6 @@ public class FinanceView {
                     case "x" -> running = false;
                     default -> presenter.showInvalidChoice();
                 }
-            } catch (IllegalArgumentException e) {
-                presenter.showError(e.getMessage());
-            }
             if (running)
                 System.out.println();
         }
@@ -56,16 +52,26 @@ public class FinanceView {
         String description = InputUtil.input("Keterangan (x Jika Batal)");
         if (description.equals("x"))
             return;
-        InputUtil.requireNonBlank(description, "Keterangan tidak boleh kosong!");
+        if (description.isBlank()) {
+            presenter.showError("Keterangan tidak boleh kosong!");
+            return;
+        }
 
         String strAmount = InputUtil.input("Jumlah");
         if (strAmount.equals("x"))
             return;
 
         // Parsing jumlah dipusatkan di InputUtil
-        double amount = InputUtil.requireValidDouble(strAmount);
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Nominal harus lebih dari 0!");
+        double amount;
+        try {
+            amount = Double.parseDouble(strAmount.trim());
+            if (amount <= 0) {
+                presenter.showError("Jumlah tidak valid!");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            presenter.showError("Jumlah tidak valid!");
+            return;
         }
 
         presenter.showAddSuccess(useCase.addTransaction(description, amount, type));
@@ -110,7 +116,13 @@ public class FinanceView {
             return;
 
         // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
 
         if (useCase.removeTransaction(id)) {
             presenter.showRemoveSuccess();

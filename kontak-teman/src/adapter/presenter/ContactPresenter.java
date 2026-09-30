@@ -55,10 +55,6 @@ public class ContactPresenter {
         System.out.println("[!] Pilihan tidak dimengerti.");
     }
 
-    public void showInvalidId() {
-        System.out.println("[!] ID tidak valid!");
-    }
-
     public void showInvalidSortOption() {
         System.out.println("[!] Pilihan tidak valid!");
     }

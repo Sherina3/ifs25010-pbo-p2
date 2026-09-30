@@ -20,7 +20,6 @@ public class ContactView {
             presenter.showContacts(useCase.getAllContacts());
             printMenu();
             String input = InputUtil.input("Pilih");
-            try {
                 switch (input) {
                     case "1" -> addContact();
                     case "2" -> updateContact();
@@ -30,9 +29,6 @@ public class ContactView {
                     case "x" -> running = false;
                     default -> presenter.showInvalidChoice();
                 }
-            } catch (IllegalArgumentException e) {
-                presenter.showError(e.getMessage());
-            }
             if (running) System.out.println();
         }
     }
@@ -51,15 +47,24 @@ public class ContactView {
         System.out.println("[Menambah Kontak]");
         String name = InputUtil.input("Nama (x Jika Batal)");
         if (name.equals("x")) return;
-        InputUtil.requireNonBlank(name, "Nama tidak boleh kosong!");
+        if (name.isBlank()) {
+            presenter.showError("Nama tidak boleh kosong!");
+            return;
+        }
 
         String phone = InputUtil.input("Telepon (x Jika Batal)");
         if (phone.equals("x")) return;
-        InputUtil.requireNonBlank(phone, "Nomor telepon tidak boleh kosong!");
+        if (phone.isBlank()) {
+            presenter.showError("Nomor telepon tidak boleh kosong!");
+            return;
+        }
 
         String email = InputUtil.input("Email (x Jika Batal)");
         if (email.equals("x")) return;
-        InputUtil.requireNonBlank(email, "Email tidak boleh kosong!");
+        if (email.isBlank()) {
+            presenter.showError("Email tidak boleh kosong!");
+            return;
+        }
 
         presenter.showAddSuccess(useCase.addContact(name, phone, email));
     }
@@ -70,7 +75,13 @@ public class ContactView {
         if (strId.equals("x")) return;
 
         // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
 
         String newName = InputUtil.input("Nama Baru (Kosongkan jika tidak ingin mengubah)");
         String newPhone = InputUtil.input("Telepon Baru (Kosongkan jika tidak ingin mengubah)");
@@ -119,7 +130,13 @@ public class ContactView {
         String strId = InputUtil.input("[ID Kontak] yang dihapus (x Jika Batal)");
         if (strId.equals("x")) return;
 
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
 
         if (useCase.removeContact(id)) {
             presenter.showRemoveSuccess();

@@ -20,7 +20,6 @@ public class TodoView {
             presenter.showTodos(useCase.getAllTodos());
             printMenu();
             String input = InputUtil.input("Pilih");
-            try {
                 switch (input) {
                     case "1" -> addTodo();
                     case "2" -> markFinished();
@@ -32,9 +31,6 @@ public class TodoView {
                     case "x" -> running = false;
                     default -> presenter.showInvalidChoice();
                 }
-            } catch (IllegalArgumentException e) {
-                presenter.showError(e.getMessage());
-            }
             if (running)
                 System.out.println();
         }
@@ -57,7 +53,10 @@ public class TodoView {
         String title = InputUtil.input("Judul (x Jika Batal)");
         if (title.equals("x"))
             return;
-        InputUtil.requireNonBlank(title, "Judul tidak boleh kosong!");
+        if (title.isBlank()) {
+            presenter.showError("Judul tidak boleh kosong!");
+            return;
+        }
         presenter.showAddSuccess(useCase.addTodo(title));
     }
 
@@ -67,7 +66,13 @@ public class TodoView {
         if (strId.equals("x"))
             return;
         // Parsing ID dipusatkan di InputUtil
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
         if (useCase.markFinished(id)) {
             presenter.showMarkFinishedSuccess();
         } else {
@@ -80,7 +85,13 @@ public class TodoView {
         String strId = InputUtil.input("ID Todo (x Jika Batal)");
         if (strId.equals("x"))
             return;
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
         if (useCase.markUnfinished(id)) {
             presenter.showMarkUnfinishedSuccess();
         } else {
@@ -93,11 +104,20 @@ public class TodoView {
         String strId = InputUtil.input("ID Todo (x Jika Batal)");
         if (strId.equals("x"))
             return;
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
         String newTitle = InputUtil.input("Judul Baru (x Jika Batal)");
         if (newTitle.equals("x"))
             return;
-        InputUtil.requireNonBlank(newTitle, "Judul tidak boleh kosong!");
+        if (newTitle.isBlank()) {
+            presenter.showError("Judul tidak boleh kosong!");
+            return;
+        }
         if (useCase.editTitle(id, newTitle)) {
             presenter.showEditSuccess();
         } else {
@@ -137,7 +157,13 @@ public class TodoView {
         String strId = InputUtil.input("ID Todo (x Jika Batal)");
         if (strId.equals("x"))
             return;
-        int id = InputUtil.requireValidId(strId);
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
         if (useCase.removeTodo(id)) {
             presenter.showRemoveSuccess();
         } else {
