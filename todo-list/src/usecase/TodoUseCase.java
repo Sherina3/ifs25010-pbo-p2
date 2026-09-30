@@ -4,6 +4,7 @@ import domain.entity.SortOption;
 import domain.entity.Todo;
 import domain.repository.ITodoRepository;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public class TodoUseCase {
@@ -59,9 +60,9 @@ public class TodoUseCase {
     }
 
     public List<Todo> searchTodos(String keyword) {
-        String lowerKeyword = keyword.toLowerCase();
+        String lowerKeyword = keyword.toLowerCase(Locale.ROOT);
         return repository.findAll().stream()
-                .filter(t -> t.getTitle().toLowerCase().contains(lowerKeyword))
+                .filter(t -> t.getTitle().toLowerCase(Locale.ROOT).contains(lowerKeyword))
                 .toList();
     }
 

@@ -20,14 +20,18 @@ public class ActivityView {
             presenter.showActivities(useCase.getAllActivities());
             printMenu();
             String input = InputUtil.input("Pilih");
-            switch (input) {
-                case "1" -> addActivity();
-                case "2" -> updateActivity();
-                case "3" -> searchActivity();
-                case "4" -> sortActivity();
-                case "5" -> removeActivity();
-                case "x" -> running = false;
-                default -> presenter.showInvalidChoice();
+            try {
+                switch (input) {
+                    case "1" -> addActivity();
+                    case "2" -> updateActivity();
+                    case "3" -> searchActivity();
+                    case "4" -> sortActivity();
+                    case "5" -> removeActivity();
+                    case "x" -> running = false;
+                    default -> presenter.showInvalidChoice();
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("[!] " + e.getMessage());
             }
             if (running)
                 System.out.println();
@@ -49,26 +53,17 @@ public class ActivityView {
         String title = InputUtil.input("Judul (x Jika Batal)");
         if (title.equals("x"))
             return;
-        if (title.isBlank()) {
-            System.out.println("[!] Judul tidak boleh kosong!");
-            return;
-        }
+        InputUtil.requireNonBlank(title, "Judul tidak boleh kosong!");
 
         String day = InputUtil.input("Hari (x Jika Batal)");
         if (day.equals("x"))
             return;
-        if (day.isBlank()) {
-            System.out.println("[!] Hari tidak boleh kosong!");
-            return;
-        }
+        InputUtil.requireNonBlank(day, "Hari tidak boleh kosong!");
 
         String time = InputUtil.input("Waktu (x Jika Batal)");
         if (time.equals("x"))
             return;
-        if (time.isBlank()) {
-            System.out.println("[!] Waktu tidak boleh kosong!");
-            return;
-        }
+        InputUtil.requireNonBlank(time, "Waktu tidak boleh kosong!");
 
         presenter.showAddSuccess(useCase.addActivity(title, day, time));
     }
@@ -80,11 +75,7 @@ public class ActivityView {
             return;
 
         // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
-        Integer id = InputUtil.parseId(strId);
-        if (id == null) {
-            presenter.showInvalidId();
-            return;
-        }
+        int id = InputUtil.requireValidId(strId);
 
         String newTitle = InputUtil.input("Judul Baru (Kosongkan jika tidak ingin mengubah)");
         String newDay = InputUtil.input("Hari Baru (Kosongkan jika tidak ingin mengubah)");
@@ -137,11 +128,7 @@ public class ActivityView {
         if (strId.equals("x"))
             return;
 
-        Integer id = InputUtil.parseId(strId);
-        if (id == null) {
-            presenter.showInvalidId();
-            return;
-        }
+        int id = InputUtil.requireValidId(strId);
 
         if (useCase.removeActivity(id)) {
             presenter.showRemoveSuccess();

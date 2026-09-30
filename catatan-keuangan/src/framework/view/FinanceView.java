@@ -21,15 +21,19 @@ public class FinanceView {
             presenter.showTransactions(useCase.getAllTransactions(), useCase.getBalance());
             printMenu();
             String input = InputUtil.input("Pilih");
-            switch (input) {
-                case "1" -> addTransaction(TransactionType.INCOME);
-                case "2" -> addTransaction(TransactionType.EXPENSE);
-                case "3" -> searchTransaction();
-                case "4" -> sortTransaction();
-                case "5" -> showBalance();
-                case "6" -> removeTransaction();
-                case "x" -> running = false;
-                default -> presenter.showInvalidChoice();
+            try {
+                switch (input) {
+                    case "1" -> addTransaction(TransactionType.INCOME);
+                    case "2" -> addTransaction(TransactionType.EXPENSE);
+                    case "3" -> searchTransaction();
+                    case "4" -> sortTransaction();
+                    case "5" -> showBalance();
+                    case "6" -> removeTransaction();
+                    case "x" -> running = false;
+                    default -> presenter.showInvalidChoice();
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("[!] " + e.getMessage());
             }
             if (running)
                 System.out.println();
@@ -52,20 +56,16 @@ public class FinanceView {
         String description = InputUtil.input("Keterangan (x Jika Batal)");
         if (description.equals("x"))
             return;
-        if (description.isBlank()) {
-            System.out.println("[!] Keterangan tidak boleh kosong!");
-            return;
-        }
+        InputUtil.requireNonBlank(description, "Keterangan tidak boleh kosong!");
 
         String strAmount = InputUtil.input("Jumlah");
         if (strAmount.equals("x"))
             return;
 
         // Parsing jumlah dipusatkan di InputUtil
-        Double amount = InputUtil.parseDouble(strAmount);
-        if (amount == null || amount <= 0) {
-            presenter.showInvalidAmount();
-            return;
+        double amount = InputUtil.requireValidDouble(strAmount);
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Nominal harus lebih dari 0!");
         }
 
         presenter.showAddSuccess(useCase.addTransaction(description, amount, type));
@@ -110,11 +110,7 @@ public class FinanceView {
             return;
 
         // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
-        Integer id = InputUtil.parseId(strId);
-        if (id == null) {
-            presenter.showInvalidId();
-            return;
-        }
+        int id = InputUtil.requireValidId(strId);
 
         if (useCase.removeTransaction(id)) {
             presenter.showRemoveSuccess();

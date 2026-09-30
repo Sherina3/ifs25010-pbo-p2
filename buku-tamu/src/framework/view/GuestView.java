@@ -19,12 +19,16 @@ public class GuestView {
             presenter.showGuests(useCase.getAllGuests());
             printMenu();
             String input = InputUtil.input("Pilih");
-            switch (input) {
-                case "1" -> addGuest();
-                case "2" -> searchGuest();
-                case "3" -> removeGuest();
-                case "x" -> running = false;
-                default -> presenter.showInvalidChoice();
+            try {
+                switch (input) {
+                    case "1" -> addGuest();
+                    case "2" -> searchGuest();
+                    case "3" -> removeGuest();
+                    case "x" -> running = false;
+                    default -> presenter.showInvalidChoice();
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("[!] " + e.getMessage());
             }
             if (running)
                 System.out.println();
@@ -44,18 +48,12 @@ public class GuestView {
         String name = InputUtil.input("Nama (x Jika Batal)");
         if (name.equals("x"))
             return;
-        if (name.isBlank()) {
-            System.out.println("[!] Nama tidak boleh kosong!");
-            return;
-        }
+        InputUtil.requireNonBlank(name, "Nama tidak boleh kosong!");
 
         String purpose = InputUtil.input("Tujuan Kunjungan (x Jika Batal)");
         if (purpose.equals("x"))
             return;
-        if (purpose.isBlank()) {
-            System.out.println("[!] Tujuan kunjungan tidak boleh kosong!");
-            return;
-        }
+        InputUtil.requireNonBlank(purpose, "Tujuan kunjungan tidak boleh kosong!");
 
         presenter.showAddSuccess(useCase.addGuest(name, purpose));
     }
@@ -75,11 +73,7 @@ public class GuestView {
             return;
 
         // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
-        Integer id = InputUtil.parseId(strId);
-        if (id == null) {
-            presenter.showInvalidId();
-            return;
-        }
+        int id = InputUtil.requireValidId(strId);
 
         if (useCase.removeGuest(id)) {
             presenter.showRemoveSuccess();
