@@ -5,11 +5,37 @@ import java.util.Scanner;
 public class InputUtil {
     private static final Scanner scanner = new Scanner(System.in);
 
+    /** Membaca satu baris input dari pengguna dengan label prompt. */
     public static String input(String info) {
         System.out.print(info + " : ");
         if (!scanner.hasNextLine()) {
             System.exit(0);
         }
         return scanner.nextLine();
+    }
+
+    /**
+     * Mem-parsing string menjadi Integer.
+     * Mengembalikan null jika string bukan angka bulat yang valid.
+     */
+    public static Integer parseId(String value) {
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Mem-parsing string menjadi Integer positif untuk jumlah stok.
+     * Berbeda dengan parseId: digunakan khusus untuk kuantitas barang.
+     * Mengembalikan null jika string bukan angka bulat yang valid.
+     */
+    public static Integer parseInteger(String value) {
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

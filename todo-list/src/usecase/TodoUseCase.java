@@ -25,24 +25,24 @@ public class TodoUseCase {
         return repository.deleteById(id);
     }
 
-    public boolean markDone(int id) {
+    public boolean markFinished(int id) {
         Optional<Todo> found = repository.findById(id);
         if (found.isEmpty()) {
             return false;
         }
         Todo todo = found.get();
-        todo.markDone();
+        todo.markFinished();
         repository.update(todo);
         return true;
     }
 
-    public boolean markUndone(int id) {
+    public boolean markUnfinished(int id) {
         Optional<Todo> found = repository.findById(id);
         if (found.isEmpty()) {
             return false;
         }
         Todo todo = found.get();
-        todo.markUndone();
+        todo.markUnfinished();
         repository.update(todo);
         return true;
     }

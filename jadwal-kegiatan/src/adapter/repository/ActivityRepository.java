@@ -20,6 +20,8 @@ public class ActivityRepository implements IActivityRepository {
 
     @Override
     public Optional<Activity> findById(int id) {
+        // Mengembalikan referensi langsung ke objek dalam list;
+        // mutasi harus selalu diikuti pemanggilan update() agar kontrak repository terpenuhi
         return data.stream().filter(a -> a.getId() == id).findFirst();
     }
 

@@ -5,7 +5,8 @@ import java.util.List;
 
 public class TodoPresenter {
     private String format(Todo t) {
-        String status = t.isDone() ? "[✓]" : "[ ]";
+        // Tampilkan status [✓] jika selesai, [ ] jika belum
+        String status = t.isFinished() ? "[✓]" : "[ ]";
         return String.format("%d | %s %s", t.getId(), status, t.getTitle());
     }
 
@@ -44,11 +45,11 @@ public class TodoPresenter {
         System.out.printf("[!] Gagal menghapus todo dengan ID: %d.%n", id);
     }
 
-    public void showMarkDoneSuccess() {
+    public void showMarkFinishedSuccess() {
         System.out.println("Berhasil menandai todo sebagai selesai.");
     }
 
-    public void showMarkUndoneSuccess() {
+    public void showMarkUnfinishedSuccess() {
         System.out.println("Berhasil menandai todo sebagai belum selesai.");
     }
 

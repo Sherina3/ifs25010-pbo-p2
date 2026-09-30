@@ -20,6 +20,8 @@ public class TodoRepository implements ITodoRepository {
 
     @Override
     public Optional<Todo> findById(int id) {
+        // Cari elemen berdasarkan ID; findFirst() mengembalikan referensi asli
+        // yang aman untuk dimutasi lalu dikirim kembali melalui update()
         return todos.stream().filter(t -> t.getId() == id).findFirst();
     }
 

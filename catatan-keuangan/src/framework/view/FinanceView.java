@@ -61,7 +61,8 @@ public class FinanceView {
         if (strAmount.equals("x"))
             return;
 
-        Double amount = parseAmount(strAmount);
+        // Parsing jumlah dipusatkan di InputUtil
+        Double amount = InputUtil.parseDouble(strAmount);
         if (amount == null || amount <= 0) {
             presenter.showInvalidAmount();
             return;
@@ -108,31 +109,17 @@ public class FinanceView {
         if (strId.equals("x"))
             return;
 
-        Integer id = parseId(strId);
-        if (id == null)
+        // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
+        Integer id = InputUtil.parseId(strId);
+        if (id == null) {
+            presenter.showInvalidId();
             return;
+        }
 
         if (useCase.removeTransaction(id)) {
             presenter.showRemoveSuccess();
         } else {
             presenter.showRemoveFailed(id);
-        }
-    }
-
-    private Integer parseId(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            presenter.showInvalidId();
-            return null;
-        }
-    }
-
-    private Double parseAmount(String value) {
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException e) {
-            return null;
         }
     }
 

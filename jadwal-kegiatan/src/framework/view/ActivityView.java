@@ -79,14 +79,18 @@ public class ActivityView {
         if (strId.equals("x"))
             return;
 
-        Integer id = parseId(strId);
-        if (id == null)
+        // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
+        Integer id = InputUtil.parseId(strId);
+        if (id == null) {
+            presenter.showInvalidId();
             return;
+        }
 
         String newTitle = InputUtil.input("Judul Baru (Kosongkan jika tidak ingin mengubah)");
         String newDay = InputUtil.input("Hari Baru (Kosongkan jika tidak ingin mengubah)");
         String newTime = InputUtil.input("Waktu Baru (Kosongkan jika tidak ingin mengubah)");
 
+        // null berarti field tidak diubah; string kosong/blank dilewati
         String title = newTitle.isBlank() ? null : newTitle;
         String day = newDay.isBlank() ? null : newDay;
         String time = newTime.isBlank() ? null : newTime;
@@ -133,23 +137,16 @@ public class ActivityView {
         if (strId.equals("x"))
             return;
 
-        Integer id = parseId(strId);
-        if (id == null)
+        Integer id = InputUtil.parseId(strId);
+        if (id == null) {
+            presenter.showInvalidId();
             return;
+        }
 
         if (useCase.removeActivity(id)) {
             presenter.showRemoveSuccess();
         } else {
             presenter.showRemoveFailed(id);
-        }
-    }
-
-    private Integer parseId(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            presenter.showInvalidId();
-            return null;
         }
     }
 

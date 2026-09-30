@@ -74,23 +74,17 @@ public class GuestView {
         if (strId.equals("x"))
             return;
 
-        Integer id = parseId(strId);
-        if (id == null)
+        // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
+        Integer id = InputUtil.parseId(strId);
+        if (id == null) {
+            presenter.showInvalidId();
             return;
+        }
 
         if (useCase.removeGuest(id)) {
             presenter.showRemoveSuccess();
         } else {
             presenter.showRemoveFailed(id);
-        }
-    }
-
-    private Integer parseId(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            presenter.showInvalidId();
-            return null;
         }
     }
 }

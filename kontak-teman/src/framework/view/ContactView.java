@@ -73,18 +73,23 @@ public class ContactView {
         System.out.println("[Mengubah Kontak]");
         String strId = InputUtil.input("ID Kontak yang diubah (x Jika Batal)");
         if (strId.equals("x")) return;
-        
-        Integer id = parseId(strId);
-        if (id == null) return;
-        
+
+        // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
+        Integer id = InputUtil.parseId(strId);
+        if (id == null) {
+            presenter.showInvalidId();
+            return;
+        }
+
         String newName = InputUtil.input("Nama Baru (Kosongkan jika tidak ingin mengubah)");
         String newPhone = InputUtil.input("Telepon Baru (Kosongkan jika tidak ingin mengubah)");
         String newEmail = InputUtil.input("Email Baru (Kosongkan jika tidak ingin mengubah)");
-        
+
+        // null berarti field tidak diubah; string kosong/blank dilewati
         String name = newName.isBlank() ? null : newName;
         String phone = newPhone.isBlank() ? null : newPhone;
         String email = newEmail.isBlank() ? null : newEmail;
-        
+
         if (useCase.updateContact(id, name, phone, email)) {
             presenter.showUpdateSuccess();
         } else {
@@ -108,13 +113,13 @@ public class ContactView {
         System.out.println("x. Batal");
         String input = InputUtil.input("Pilih");
         if (input.equals("x")) return;
-        
+
         SortOption option = mapSortOption(input);
         if (option == null) {
             presenter.showInvalidSortOption();
             return;
         }
-        
+
         presenter.showSortedContacts(useCase.sortContacts(option));
     }
 
@@ -122,23 +127,17 @@ public class ContactView {
         System.out.println("[Menghapus Kontak]");
         String strId = InputUtil.input("[ID Kontak] yang dihapus (x Jika Batal)");
         if (strId.equals("x")) return;
-        
-        Integer id = parseId(strId);
-        if (id == null) return;
-        
+
+        Integer id = InputUtil.parseId(strId);
+        if (id == null) {
+            presenter.showInvalidId();
+            return;
+        }
+
         if (useCase.removeContact(id)) {
             presenter.showRemoveSuccess();
         } else {
             presenter.showRemoveFailed(id);
-        }
-    }
-
-    private Integer parseId(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            presenter.showInvalidId();
-            return null;
         }
     }
 

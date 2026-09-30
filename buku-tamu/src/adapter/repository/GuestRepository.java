@@ -20,6 +20,8 @@ public class GuestRepository implements IGuestRepository {
 
     @Override
     public Optional<Guest> findById(int id) {
+        // Mengembalikan referensi langsung ke objek dalam list;
+        // mutasi harus selalu diikuti pemanggilan update() agar kontrak repository terpenuhi
         return data.stream().filter(g -> g.getId() == id).findFirst();
     }
 

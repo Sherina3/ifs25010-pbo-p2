@@ -58,7 +58,8 @@ public class ItemView {
         if (strQuantity.equals("x"))
             return;
 
-        Integer quantity = parseQuantity(strQuantity);
+        // Parsing jumlah dipusatkan di InputUtil
+        Integer quantity = InputUtil.parseInteger(strQuantity);
         if (quantity == null || quantity <= 0) {
             presenter.showInvalidQuantity();
             return;
@@ -81,14 +82,17 @@ public class ItemView {
         if (strId.equals("x"))
             return;
 
-        Integer id = parseId(strId);
-        if (id == null)
+        // Parsing ID dipusatkan di InputUtil
+        Integer id = InputUtil.parseId(strId);
+        if (id == null) {
+            presenter.showInvalidId();
             return;
+        }
 
         String strQuantity = InputUtil.input("Jumlah Baru (Kosongkan jika tidak ingin mengubah)");
         Integer quantity = null;
         if (!strQuantity.isBlank()) {
-            quantity = parseQuantity(strQuantity);
+            quantity = InputUtil.parseInteger(strQuantity);
             if (quantity == null || quantity <= 0) {
                 presenter.showInvalidQuantity();
                 return;
@@ -137,31 +141,16 @@ public class ItemView {
         if (strId.equals("x"))
             return;
 
-        Integer id = parseId(strId);
-        if (id == null)
+        Integer id = InputUtil.parseId(strId);
+        if (id == null) {
+            presenter.showInvalidId();
             return;
+        }
 
         if (useCase.removeItem(id)) {
             presenter.showRemoveSuccess();
         } else {
             presenter.showRemoveFailed(id);
-        }
-    }
-
-    private Integer parseId(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            presenter.showInvalidId();
-            return null;
-        }
-    }
-
-    private Integer parseQuantity(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return null;
         }
     }
 

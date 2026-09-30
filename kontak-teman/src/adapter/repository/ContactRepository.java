@@ -20,6 +20,8 @@ public class ContactRepository implements IContactRepository {
 
     @Override
     public Optional<Contact> findById(int id) {
+        // Mengembalikan referensi langsung ke objek dalam list;
+        // mutasi harus selalu diikuti pemanggilan update() agar kontrak repository terpenuhi
         return data.stream().filter(c -> c.getId() == id).findFirst();
     }
 

@@ -21,6 +21,8 @@ public class TransactionRepository implements ITransactionRepository {
 
     @Override
     public Optional<Transaction> findById(int id) {
+        // Mengembalikan referensi langsung ke objek dalam list;
+        // mutasi harus selalu diikuti pemanggilan update() agar kontrak repository terpenuhi
         return data.stream().filter(t -> t.getId() == id).findFirst();
     }
 
