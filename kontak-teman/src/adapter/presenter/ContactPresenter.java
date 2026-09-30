@@ -62,4 +62,8 @@ public class ContactPresenter {
     public void showInvalidSortOption() {
         System.out.println("[!] Pilihan tidak valid!");
     }
+
+    public void showError(String message) {
+        System.out.println("[!] " + message);
+    }
 }

@@ -10,6 +10,12 @@ public class App {
         GuestUseCase useCase = new GuestUseCase(repository);
         GuestPresenter presenter = new GuestPresenter();
         GuestView view = new GuestView(useCase, presenter);
-        view.show();
+        try {
+            view.show();
+        } catch (framework.util.EndOfInputException e) {
+            System.out.println("\n" + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("\nTerjadi kesalahan yang tidak terduga: " + e.getMessage());
+        }
     }
 }

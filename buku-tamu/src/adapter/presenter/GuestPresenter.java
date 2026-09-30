@@ -46,4 +46,8 @@ public class GuestPresenter {
     public void showInvalidId() {
         System.out.println("[!] ID tidak valid!");
     }
+
+    public void showError(String message) {
+        System.out.println("[!] " + message);
+    }
 }

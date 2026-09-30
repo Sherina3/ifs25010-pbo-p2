@@ -28,7 +28,7 @@ public class GuestView {
                     default -> presenter.showInvalidChoice();
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("[!] " + e.getMessage());
+                presenter.showError(e.getMessage());
             }
             if (running)
                 System.out.println();

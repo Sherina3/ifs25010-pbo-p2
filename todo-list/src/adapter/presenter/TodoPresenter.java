@@ -54,7 +54,7 @@ public class TodoPresenter {
     }
 
     public void showMarkFailed(int id) {
-        System.out.printf("[!] Todo dengan ID: %d tidak ditemukan.%n", id);
+        System.out.printf("[!] Gagal mengubah/menandai todo dengan ID: %d.%n", id);
     }
 
     public void showEditSuccess() {
@@ -62,7 +62,7 @@ public class TodoPresenter {
     }
 
     public void showEditFailed(int id) {
-        System.out.printf("[!] Todo dengan ID: %d tidak ditemukan.%n", id);
+        System.out.printf("[!] Gagal mengubah/menandai todo dengan ID: %d.%n", id);
     }
 
     public void showInvalidChoice() {
@@ -75,5 +75,9 @@ public class TodoPresenter {
 
     public void showInvalidSortOption() {
         System.out.println("[!] Pilihan urutan tidak valid!");
+    }
+
+    public void showError(String message) {
+        System.out.println("[!] " + message);
     }
 }

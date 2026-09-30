@@ -66,4 +66,8 @@ public class ItemPresenter {
     public void showInvalidQuantity() {
         System.out.println("[!] Jumlah stok tidak valid!");
     }
+
+    public void showError(String message) {
+        System.out.println("[!] " + message);
+    }
 }

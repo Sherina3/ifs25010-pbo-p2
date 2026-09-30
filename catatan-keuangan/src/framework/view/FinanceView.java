@@ -33,7 +33,7 @@ public class FinanceView {
                     default -> presenter.showInvalidChoice();
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("[!] " + e.getMessage());
+                presenter.showError(e.getMessage());
             }
             if (running)
                 System.out.println();
@@ -100,7 +100,7 @@ public class FinanceView {
     }
 
     private void showBalance() {
-        System.out.printf("Saldo saat ini: Rp %.0f%n", useCase.getBalance());
+        presenter.showCurrentBalance(useCase.getBalance());
     }
 
     private void removeTransaction() {

@@ -66,4 +66,12 @@ public class FinancePresenter {
     public void showInvalidAmount() {
         System.out.println("[!] Jumlah tidak valid!");
     }
+
+    public void showCurrentBalance(double balance) {
+        printBalance(balance);
+    }
+
+    public void showError(String message) {
+        System.out.println("[!] " + message);
+    }
 }
