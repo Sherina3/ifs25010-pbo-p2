@@ -16,9 +16,31 @@ public class FinanceView {
     }
 
     public void show() {
+<<<<<<< HEAD
         while (true) {
             presenter.showTransactions(useCase.getAllTransactions());
             presenter.showBalance((long) useCase.getBalance());
+=======
+        boolean running = true;
+        while (running) {
+            presenter.showTransactions(useCase.getAllTransactions(), useCase.getBalance());
+            printMenu();
+            String input = InputUtil.input("Pilih");
+                switch (input) {
+                    case "1" -> addTransaction(TransactionType.INCOME);
+                    case "2" -> addTransaction(TransactionType.EXPENSE);
+                    case "3" -> searchTransaction();
+                    case "4" -> sortTransaction();
+                    case "5" -> showBalance();
+                    case "6" -> removeTransaction();
+                    case "x" -> running = false;
+                    default -> presenter.showInvalidChoice();
+                }
+            if (running)
+                System.out.println();
+        }
+    }
+>>>>>>> 25ed260698a420d91dda95444012d41bf4a61474
 
             System.out.println("Menu:");
             System.out.println("1. Tambah Pemasukan");
@@ -63,10 +85,37 @@ public class FinanceView {
     }
 
     private void addTransaction(TransactionType type) {
+<<<<<<< HEAD
         if (type == TransactionType.PEMASUKAN) {
             System.out.println("[Tambah Pemasukan]");
         } else {
             System.out.println("[Tambah Pengeluaran]");
+=======
+        System.out.println(type == TransactionType.INCOME ? "[Tambah Pemasukan]" : "[Tambah Pengeluaran]");
+        String description = InputUtil.input("Keterangan (x Jika Batal)");
+        if (description.equals("x"))
+            return;
+        if (description.isBlank()) {
+            presenter.showError("Keterangan tidak boleh kosong!");
+            return;
+        }
+
+        String strAmount = InputUtil.input("Jumlah");
+        if (strAmount.equals("x"))
+            return;
+
+        // Parsing jumlah dipusatkan di InputUtil
+        double amount;
+        try {
+            amount = Double.parseDouble(strAmount.trim());
+            if (amount <= 0) {
+                presenter.showError("Jumlah tidak valid!");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            presenter.showError("Jumlah tidak valid!");
+            return;
+>>>>>>> 25ed260698a420d91dda95444012d41bf4a61474
         }
 
         String desc = InputUtil.input("Keterangan (x Jika Batal)");
@@ -125,11 +174,20 @@ public class FinanceView {
         presenter.showSortedTransactions(useCase.getSortedTransactions(sortOption));
     }
 
+<<<<<<< HEAD
     private void deleteTransaction() {
+=======
+    private void showBalance() {
+        presenter.showCurrentBalance(useCase.getBalance());
+    }
+
+    private void removeTransaction() {
+>>>>>>> 25ed260698a420d91dda95444012d41bf4a61474
         System.out.println("[Hapus Transaksi]");
         String idStr = InputUtil.input("ID Transaksi (x Jika Batal)");
         if (idStr.equalsIgnoreCase("x")) return;
 
+<<<<<<< HEAD
         try {
             int id = Integer.parseInt(idStr);
             if (useCase.deleteTransaction(id)) {
@@ -142,3 +200,31 @@ public class FinanceView {
         }
     }
 }
+=======
+        // Parsing ID dipusatkan di InputUtil untuk menghindari duplikasi
+        int id;
+        try {
+            id = Integer.parseInt(strId.trim());
+        } catch (NumberFormatException e) {
+            presenter.showError("ID tidak valid!");
+            return;
+        }
+
+        if (useCase.removeTransaction(id)) {
+            presenter.showRemoveSuccess();
+        } else {
+            presenter.showRemoveFailed(id);
+        }
+    }
+
+    private SortOption mapSortOption(String input) {
+        return switch (input) {
+            case "1" -> SortOption.AMOUNT_ASC;
+            case "2" -> SortOption.AMOUNT_DESC;
+            case "3" -> SortOption.INCOME_FIRST;
+            case "4" -> SortOption.EXPENSE_FIRST;
+            default -> null;
+        };
+    }
+}
+>>>>>>> 25ed260698a420d91dda95444012d41bf4a61474

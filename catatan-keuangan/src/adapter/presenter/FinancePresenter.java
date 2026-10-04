@@ -53,4 +53,24 @@ public class FinancePresenter {
     public void showError(String error) {
         System.out.println(error);
     }
+<<<<<<< HEAD
 }
+=======
+
+    public void showInvalidChoice() {
+        System.out.println("[!] Pilihan tidak dimengerti.");
+    }
+
+    public void showInvalidSortOption() {
+        System.out.println("[!] Pilihan tidak valid!");
+    }
+
+    public void showCurrentBalance(double balance) {
+        printBalance(balance);
+    }
+
+    public void showError(String message) {
+        System.out.println("[!] " + message);
+    }
+}
+>>>>>>> 25ed260698a420d91dda95444012d41bf4a61474

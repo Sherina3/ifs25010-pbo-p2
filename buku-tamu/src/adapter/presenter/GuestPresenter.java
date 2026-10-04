@@ -42,4 +42,24 @@ public class GuestPresenter {
             }
         }
     }
+<<<<<<< HEAD
 }
+=======
+
+    public void showRemoveSuccess() {
+        System.out.println("Berhasil menghapus tamu.");
+    }
+
+    public void showRemoveFailed(int id) {
+        System.out.printf("[!] Gagal menghapus tamu dengan ID: %d.%n", id);
+    }
+
+    public void showInvalidChoice() {
+        System.out.println("[!] Pilihan tidak dimengerti.");
+    }
+
+    public void showError(String message) {
+        System.out.println("[!] " + message);
+    }
+}
+>>>>>>> 25ed260698a420d91dda95444012d41bf4a61474
